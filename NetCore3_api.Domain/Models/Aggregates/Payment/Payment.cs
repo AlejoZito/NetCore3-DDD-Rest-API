@@ -2,15 +2,15 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using U = NetCore3_api.Domain.Models.Aggregates.User;
 
-namespace NetCore3_api.Domain.Models
+namespace NetCore3_api.Domain.Models.Aggregates.Payment
 {
     public class Payment : Entity
     {
         public Currency Currency { get; set; }
         public decimal Amount { get; set; }
-        public User User { get; set; }
-        public List<ChargePayment> Charges { get; set; }
-        public bool IsValid { get; set; }
+        public U.User User { get; set; }
+        public List<PaymentCharge> Charges { get; set; }
     }
 }

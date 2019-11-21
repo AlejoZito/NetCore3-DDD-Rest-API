@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace NetCore3_api.Domain.Models
+namespace NetCore3_api.Domain.Models.ValueObjects
 {
     public class ChargeCategory : Entity
     {

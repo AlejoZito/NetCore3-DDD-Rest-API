@@ -3,15 +3,15 @@ using NetCore3_api.Domain.Models.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using U = NetCore3_api.Domain.Models.Aggregates.User;
 
-namespace NetCore3_api.Domain.Models
+namespace NetCore3_api.Domain.Models.Aggregates.Event
 {
     public class Event : Entity
     {
-        public decimal Amount { get; set; }
-        public Currency Currency { get; set; }
-        public User User { get; set; }
         public EventType Type { get; set; }
         public DateTime Date { get; set; }
+        public U.User User { get; set; }
+        public Charge Charge { get; set; }
     }
 }
