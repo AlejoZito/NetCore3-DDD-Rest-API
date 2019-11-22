@@ -10,10 +10,10 @@ namespace NetCore3_api.Domain.Contracts
     {
         Task<List<T>> ListAsync(SortOptions sortOptions = null, int? pageSize = int.MaxValue, int? pageNumber = 1);
         Task<List<T>> ListAsync(Expression<Func<T, bool>> predicate, SortOptions sortOptions = null, int? pageSize = int.MaxValue, int? pageNumber = 1);
-        Task<T> FindByIdAsync(int id);
+        Task<T> FindByIdAsync(long id);
         Task<T> FindAsync(Expression<Func<T, bool>> predicate);
         T Insert(T entity);
         T Update(T entity);
-        void Delete(int entity);
+        void Delete(long id);
     }
 }
