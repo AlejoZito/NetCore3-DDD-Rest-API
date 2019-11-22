@@ -11,6 +11,5 @@ namespace NetCore3_api.Domain.Models.Aggregates.Event
         public EventType Type { get; set; }
         public DateTime Date { get; set; }
         public U.User User { get; set; }
-        public Charge Charge { get; set; }
     }
 }

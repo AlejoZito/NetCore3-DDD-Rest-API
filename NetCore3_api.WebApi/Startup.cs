@@ -6,10 +6,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NetCore3_api.Infrastructure;
 
 namespace NetCore3_api.WebApi
 {
@@ -26,10 +28,19 @@ namespace NetCore3_api.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            //.AddNewtonsoftJson(); //Replace System.Json formatter with NewtonsoftJson
+
+            //Migrations
+            //dotnet ef migrations add Init --project NetCore3_api.Infrastructure --startup NetCore3_api.WebApi
+            //dotnet ef database update --project NetCore3_api.Infrastructure --startup-project NetCore3_api.WebApi
+            services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("DefaultConnection"),
+                    b => b.MigrationsAssembly("NetCore3_api.Infrastructure")));
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+            // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+            public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -40,7 +51,7 @@ namespace NetCore3_api.WebApi
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

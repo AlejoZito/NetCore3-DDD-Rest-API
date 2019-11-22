@@ -42,6 +42,7 @@ namespace NetCore3_api.Domain.DomainServices
             }
             else
             {
+                //If invoice was found, add charge
                 foundInvoice.Charges.Add(charge);
                 return _invoiceRepository.Update(foundInvoice);
             }
