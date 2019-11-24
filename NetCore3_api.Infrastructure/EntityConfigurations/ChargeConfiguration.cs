@@ -14,7 +14,9 @@ namespace NetCore3_api.Infrastructure.EntityConfigurations
             builder.ToTable("Charges");
 
             //Amount value object persisted as owned entity in EF Core >2.0
-            builder.OwnsOne(o => o.Amount);
+            builder.OwnsOne(o => o.Amount).Ignore(x=>x.ValidationErrors);
+
+            builder.Ignore(x => x.ValidationErrors);
         }
     }
 }

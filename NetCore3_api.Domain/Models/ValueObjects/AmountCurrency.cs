@@ -1,4 +1,5 @@
 ﻿using NetCore3_api.Domain.Contracts;
+using NetCore3_api.Domain.Enumerations;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,7 +16,7 @@ namespace NetCore3_api.Domain.Models.ValueObjects
 
         public decimal Amount { get; set; }
         public string Currency { get; set; }
-        public List<ValidationError> ValidationErrors { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public List<ValidationError> ValidationErrors { get; set; }
 
         public bool IsValid()
         {
@@ -40,8 +41,12 @@ namespace NetCore3_api.Domain.Models.ValueObjects
             if (Amount <= 0)
                 ValidationErrors.Add(new ValidationError(nameof(Amount), "Amount is invalid, must be greater than 0"));
 
-            if (Amount <= 0)
-                ValidationErrors.Add(new ValidationError(nameof(Amount), "Amount is invalid, must be greater than 0"));
+            if (string.IsNullOrWhiteSpace(Currency))
+                ValidationErrors.Add(new ValidationError(nameof(Currency), "Currency is empty"));
+            else if (!Enum.IsDefined(typeof(Currency), Currency))
+                ValidationErrors.Add(new ValidationError(
+                    nameof(Currency), 
+                    $"Invalid currency, valid currencies are [{string.Join(", ",Enum.GetNames(typeof(Currency)))}"));
         }
     }
 }

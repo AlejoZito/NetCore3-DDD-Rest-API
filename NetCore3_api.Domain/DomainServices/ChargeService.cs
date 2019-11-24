@@ -31,15 +31,18 @@ namespace NetCore3_api.Domain.DomainServices
             long userId,
             string eventTypeName)
         {
+            if (string.IsNullOrEmpty(eventTypeName))
+                eventTypeName = "";
+
             //Build charge entity
             Charge charge = new Charge()
             {
-                Amount = new AmountCurrency(amount, currency.ToLower()),
+                Amount = new AmountCurrency(amount, currency?.ToUpper()),
                 Event = new Event()
                 {
                     //Build event entity and fetch references
                     //(will be used to validate valid eventTypeName and userId)
-                    Type = await _eventTypeRepository.FindAsync(x => x.Name.ToLower() == eventTypeName.ToLower()),
+                    Type = await _eventTypeRepository.FindAsync(x => x.Name.ToLower() == eventTypeName),
                     Date = DateTime.Now,
                     User = await _userRepository.FindByIdAsync(userId),
                 }

@@ -24,6 +24,8 @@ namespace NetCore3_api.Infrastructure.EntityConfigurations
                 .WithMany()
                 .IsRequired(true)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Ignore(x => x.ValidationErrors);
         }
     }
 }

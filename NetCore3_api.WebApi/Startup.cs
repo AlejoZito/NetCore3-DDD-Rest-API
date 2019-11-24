@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -11,7 +12,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
+using NetCore3_api.Domain.Contracts;
+using NetCore3_api.Domain.Models.Aggregates.Event;
+using NetCore3_api.Domain.Models.Aggregates.User;
 using NetCore3_api.Infrastructure;
+using NetCore3_api.Infrastructure.Repositories;
+using Newtonsoft.Json;
 
 namespace NetCore3_api.WebApi
 {
@@ -27,16 +34,32 @@ namespace NetCore3_api.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-            //.AddNewtonsoftJson(); //Replace System.Json formatter with NewtonsoftJson
-
+            services.AddControllers()
+                    .AddNewtonsoftJson(); //Replace System.Json formatter with NewtonsoftJson
             //Migrations
-            //dotnet ef migrations add Init --project NetCore3_api.Infrastructure --startup NetCore3_api.WebApi
+            //dotnet ef migrations add Init --project NetCore3_api.Infrastructure --startup-project NetCore3_api.WebApi
             //dotnet ef database update --project NetCore3_api.Infrastructure --startup-project NetCore3_api.WebApi
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection"),
                     b => b.MigrationsAssembly("NetCore3_api.Infrastructure")));
+
+            services.AddScoped<IRepository<Charge>, BaseRepository<Charge>>();
+            services.AddScoped<IRepository<EventType>, BaseRepository<EventType>>();
+            services.AddScoped<IRepository<User>, BaseRepository<User>>();
+
+
+            //services.AddAutoMapper(typeof(Startup));
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AllowNullCollections = true;
+            }, typeof(Startup));
+
+            // Inject an implementation of ISwaggerProvider with defaulted settings applied
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Meli API", Version = "v1" });
+            });
         }
 
             // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,10 +70,15 @@ namespace NetCore3_api.WebApi
                 app.UseDeveloperExceptionPage();
             }
 
+            // Enable middleware to serve generated Swagger as a JSON endpoint
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui assets (HTML, JS, CSS etc.)
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Meli API V1"));
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
             //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
