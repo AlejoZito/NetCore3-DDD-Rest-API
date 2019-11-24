@@ -25,7 +25,8 @@ namespace NetCore3_api.Domain.Models.Aggregates.Event
             ValidationErrors = new List<ValidationError>();
 
             if (!Event.IsValid())
-                ValidationErrors.Add(new ValidationError(nameof(Event), "Event invalid, check inner properties"));
+                ValidationErrors.AddRange(Event.ValidationErrors);
+                //ValidationErrors.Add(new ValidationError(nameof(Event), "Event is not valid, check inner properties"));
 
             if (Amount == null)
                 ValidationErrors.Add(new ValidationError(nameof(Amount), "Must enter a valid amount and currency"));

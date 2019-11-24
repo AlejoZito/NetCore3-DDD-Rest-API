@@ -42,7 +42,7 @@ namespace NetCore3_api.Domain.DomainServices
                 {
                     //Build event entity and fetch references
                     //(will be used to validate valid eventTypeName and userId)
-                    Type = await _eventTypeRepository.FindAsync(x => x.Name.ToLower() == eventTypeName),
+                    Type = await _eventTypeRepository.FindAsync(x => x.Name.ToLower() == eventTypeName.ToLower()),
                     Date = DateTime.Now,
                     User = await _userRepository.FindByIdAsync(userId),
                 }

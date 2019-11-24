@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NetCore3_api.Domain.Contracts;
@@ -11,6 +12,8 @@ using NetCore3_api.Domain.Models.Aggregates.Event;
 using NetCore3_api.Domain.Models.Aggregates.User;
 using NetCore3_api.Infrastructure;
 using NetCore3_api.WebApi.DTOs;
+using NetCore3_api.WebApi.SwaggerExamples;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace NetCore3_api.WebApi.Controllers
 {
@@ -21,16 +24,19 @@ namespace NetCore3_api.WebApi.Controllers
         readonly IRepository<Charge> _chargeRepository;
         readonly IRepository<EventType> _eventTypeRepository;
         readonly IRepository<User> _userRepository;
-        AppDbContext _dbContext;
+        readonly IMapper _mapper;
+        readonly AppDbContext _dbContext;
         public EventController(
             IRepository<Charge> chargeRepository,
             IRepository<EventType> eventTypeRepository,
             IRepository<User> userRepository,
+            IMapper mapper,
             AppDbContext dbContext)
         {
             _chargeRepository = chargeRepository;
             _eventTypeRepository = eventTypeRepository;
             _userRepository = userRepository;
+            _mapper = mapper;
             _dbContext = dbContext;
         }
 
@@ -65,7 +71,7 @@ namespace NetCore3_api.WebApi.Controllers
             }
             catch (InvalidEntityException ex)
             {
-                return BadRequest((Charge)ex.Model);
+                return BadRequest(_mapper.Map<CreateEventFailedResponse>(ex.Model));
             }
         }
     }

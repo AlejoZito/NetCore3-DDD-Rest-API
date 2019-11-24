@@ -24,6 +24,10 @@ namespace NetCore3_api.Domain.Models.Aggregates.Event
         {
             ValidationErrors = new List<ValidationError>();
 
+            if(Type == null)
+                ValidationErrors.Add(new ValidationError(nameof(Type), "Invalid event type"));
+            else if (Type.Category == null)
+                ValidationErrors.Add(new ValidationError(nameof(Type), "Invalid event type, no category found"));
             if (Type == null)
                 ValidationErrors.Add(new ValidationError(nameof(Type), "Must enter a valid event type"));
             if(User == null)

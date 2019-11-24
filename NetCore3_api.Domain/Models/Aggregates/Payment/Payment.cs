@@ -10,6 +10,7 @@ namespace NetCore3_api.Domain.Models.Aggregates.Payment
         public string Currency { get; set; }
         public decimal Amount { get; set; }
         public U.User User { get; set; }
+        public DateTime Date {get;set;}
         public List<PaymentCharge> Charges { get; set; }
     }
 }
