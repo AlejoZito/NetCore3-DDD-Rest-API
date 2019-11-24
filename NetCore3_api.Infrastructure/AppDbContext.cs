@@ -33,6 +33,7 @@ namespace NetCore3_api.Infrastructure
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfiguration(new EventConfiguration());
+            modelBuilder.ApplyConfiguration(new ChargeConfiguration());
 
             Seed(modelBuilder);
         }
