@@ -23,18 +23,22 @@ namespace NetCore3_api.WebApi.Controllers
     {
         readonly IRepository<Charge> _chargeRepository;
         readonly IRepository<EventType> _eventTypeRepository;
+        readonly IRepository<Invoice> _invoiceRepository;
+
         readonly IRepository<User> _userRepository;
         readonly IMapper _mapper;
         readonly AppDbContext _dbContext;
         public EventController(
             IRepository<Charge> chargeRepository,
             IRepository<EventType> eventTypeRepository,
+            IRepository<Invoice> invoiceRepository,
             IRepository<User> userRepository,
             IMapper mapper,
             AppDbContext dbContext)
         {
             _chargeRepository = chargeRepository;
             _eventTypeRepository = eventTypeRepository;
+            _invoiceRepository = invoiceRepository;
             _userRepository = userRepository;
             _mapper = mapper;
             _dbContext = dbContext;
@@ -48,11 +52,12 @@ namespace NetCore3_api.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Create(
             [FromBody]CreateEventRequest createEventRequest)
-        { 
+        {
             //Get charge domain service
             ChargeService chargeService = new ChargeService(
                 _chargeRepository,
                 _eventTypeRepository,
+                _invoiceRepository,
                 _userRepository);
 
             try

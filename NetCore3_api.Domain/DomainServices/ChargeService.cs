@@ -15,14 +15,17 @@ namespace NetCore3_api.Domain.DomainServices
     {
         readonly IRepository<Charge> _chargeRepository;
         readonly IRepository<EventType> _eventTypeRepository;
+        readonly IRepository<Invoice> _invoiceRepository;
         readonly IRepository<User> _userRepository;
         public ChargeService(
             IRepository<Charge> chargeRepository,
             IRepository<EventType> eventTypeRepository,
+            IRepository<Invoice> invoiceRepository,
             IRepository<User> userRepository)
         {
             _chargeRepository = chargeRepository;
             _eventTypeRepository = eventTypeRepository;
+            _invoiceRepository = invoiceRepository;
             _userRepository = userRepository;
         }
         public async Task<Charge> CreateChargeWithEvent(
@@ -34,6 +37,8 @@ namespace NetCore3_api.Domain.DomainServices
             if (string.IsNullOrEmpty(eventTypeName))
                 eventTypeName = "";
 
+            var user = await _userRepository.FindByIdAsync(userId);
+
             //Build charge entity
             Charge charge = new Charge()
             {
@@ -44,20 +49,20 @@ namespace NetCore3_api.Domain.DomainServices
                     //(will be used to validate valid eventTypeName and userId)
                     Type = await _eventTypeRepository.FindAsync(x => x.Name.ToLower() == eventTypeName.ToLower()),
                     Date = DateTime.Now,
-                    User = await _userRepository.FindByIdAsync(userId),
+                    User = user,
                 }
             };
 
-            //ToDo:
             if (charge.IsValid())
+            {
+                InvoiceService invoiceService = new InvoiceService(_invoiceRepository);
+                //Add charge to existing invoice or create a new one
+                await invoiceService.AddCharge(charge, user);
+
                 return _chargeRepository.Insert(charge);
+            }
             else
                 throw new InvalidEntityException(charge);
-            //Ver si hay un invoice creado para este mes/año del user
-            //o crear uno nuevo
-
-
-            //Incrementar deuda del user
         }
     }
 }
