@@ -1,4 +1,5 @@
 ﻿using NetCore3_api.Domain.Contracts;
+using NetCore3_api.Domain.Enumerations;
 using NetCore3_api.Domain.Models.Aggregates.Payment;
 using NetCore3_api.Domain.Models.ValueObjects;
 using System;
@@ -33,6 +34,14 @@ namespace NetCore3_api.Domain.Models.Aggregates.Event
 
             if (!Amount.IsValid())
                 ValidationErrors.AddRange(Amount.ValidationErrors);
+        }
+
+        public Currency? GetCurrency()
+        {
+            if (Amount != null)
+                return Amount.Currency;
+            else
+                return null;
         }
     }
 }

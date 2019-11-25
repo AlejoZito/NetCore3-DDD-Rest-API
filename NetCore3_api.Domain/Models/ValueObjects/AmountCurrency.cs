@@ -11,11 +11,26 @@ namespace NetCore3_api.Domain.Models.ValueObjects
         public AmountCurrency(decimal amount, string currency)
         {
             Amount = amount;
+
+            //Leave Currency null if value can't be parsed
+            if (Enum.TryParse(typeof(Currency), currency, true, out object parsedCurrency))
+                Currency = (Currency)parsedCurrency;
+            else
+                Currency = null;
+        }
+
+        public AmountCurrency(decimal amount, Currency currency)
+        {
+            Amount = amount;
             Currency = currency;
         }
 
         public decimal Amount { get; set; }
-        public string Currency { get; set; }
+
+        /// <summary>
+        /// Made nullable for validation implementation
+        /// </summary>
+        public Currency? Currency { get; set; }
         public List<ValidationError> ValidationErrors { get; set; }
 
         public bool IsValid()
@@ -31,7 +46,7 @@ namespace NetCore3_api.Domain.Models.ValueObjects
             else
                 return new AmountCurrency(
                     amountCurrency.Amount + this.Amount, 
-                    this.Currency);
+                    this.Currency.ToString());
         }
 
         public void Validate()
@@ -41,8 +56,8 @@ namespace NetCore3_api.Domain.Models.ValueObjects
             if (Amount <= 0)
                 ValidationErrors.Add(new ValidationError(nameof(Amount), "Amount is invalid, must be greater than 0"));
 
-            if (string.IsNullOrWhiteSpace(Currency))
-                ValidationErrors.Add(new ValidationError(nameof(Currency), "Currency is empty"));
+            if (Currency == null)
+                ValidationErrors.Add(new ValidationError(nameof(Currency), "Currency is invalid"));
             else if (!Enum.IsDefined(typeof(Currency), Currency))
                 ValidationErrors.Add(new ValidationError(
                     nameof(Currency), 
