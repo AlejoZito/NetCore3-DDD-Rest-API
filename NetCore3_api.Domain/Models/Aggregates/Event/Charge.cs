@@ -4,6 +4,7 @@ using NetCore3_api.Domain.Models.Aggregates.Payment;
 using NetCore3_api.Domain.Models.ValueObjects;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace NetCore3_api.Domain.Models.Aggregates.Event
@@ -34,6 +35,16 @@ namespace NetCore3_api.Domain.Models.Aggregates.Event
 
             if (!Amount.IsValid())
                 ValidationErrors.AddRange(Amount.ValidationErrors);
+        }
+
+        public decimal GetUnPaidAmount()
+        {
+            decimal paidSum = 0;
+            if (Payments != null && Payments.Count > 0)
+                paidSum = Payments.Sum(x => x.Amount);
+            
+            //Charge amount - paid amount total
+            return this.Amount.Amount - paidSum;
         }
 
         public Currency? GetCurrency()

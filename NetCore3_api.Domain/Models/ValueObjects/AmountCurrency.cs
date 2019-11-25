@@ -1,5 +1,6 @@
 ﻿using NetCore3_api.Domain.Contracts;
 using NetCore3_api.Domain.Enumerations;
+using NetCore3_api.Domain.Models.Aggregates.Payment;
 using System;
 using System.Collections.Generic;
 using System.Text;

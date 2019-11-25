@@ -50,7 +50,7 @@ namespace NetCore3_api.Domain.Tests
             }
         }
 
-        //ToDo: mover a infrastructure tests
+        //ToDo: mover a infrastructure/integration tests
         //[Test]
         //public async Task Test1()
         //{
