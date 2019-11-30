@@ -35,10 +35,13 @@ namespace NetCore3_api.Domain.Models.Aggregates.Payment
         {
 
             ValidationErrors = new List<ValidationError>();
+            if (Amount <= 0)
+                ValidationErrors.Add(new ValidationError(nameof(Amount), "Payment amount should be greater than 0"));
             if (User == null)
                 ValidationErrors.Add(new ValidationError(nameof(User), "Could not find requested user"));
 
             //ToDo: agregar regla de validacion de currency (habría que hacer la prop. nullable)
+            //Esta regla quedó en el payment service
         }
     }
 }

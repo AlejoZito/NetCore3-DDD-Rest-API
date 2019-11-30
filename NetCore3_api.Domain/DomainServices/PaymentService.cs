@@ -42,10 +42,10 @@ namespace NetCore3_api.Domain.DomainServices
             if (payment.IsValid())
             {
                 //1) Validate payment is valid with business rules (DOES NOT EXCEED USER DEBTH)
-                if (await _userDebtService.IsValidPayment(payment, user.Id) == false)
+                if (await _userDebtService.IsValidPayment(payment) == false)
                     throw new ArgumentException("Payment amount cannot exceed user debt in this currency");
 
-                //2) Handle logic to find appropiate charges to pay
+                //2) Find unpaid charges to pay
                 var linkedCharges = await LinkPaymentToCharges(payment, userId);
 
                 //3) Add linked charges to payment

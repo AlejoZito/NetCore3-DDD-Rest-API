@@ -15,14 +15,11 @@ namespace NetCore3_api.Domain.DomainServices
     public class UserDebtService : IUserDebtService
     {
         IRepository<Charge> _chargeRepository;
-        IRepository<User> _userRepository;
 
         public UserDebtService(
-            IRepository<Charge> chargeRepository,
-            IRepository<User> userRepository)
+            IRepository<Charge> chargeRepository)
         {
             _chargeRepository = chargeRepository;
-            _userRepository = userRepository;
         }
         public async Task<AmountCurrency> GetUserDebt(long userId, Currency currency)
         {
@@ -45,10 +42,10 @@ namespace NetCore3_api.Domain.DomainServices
         /// <param name="payment"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task<bool> IsValidPayment(Payment payment, long userId)
+        public async Task<bool> IsValidPayment(Payment payment)
         {
-            AmountCurrency userDebtAmount = await GetUserDebt(userId, payment.Currency);
-            return payment.Amount > userDebtAmount.Amount;
+            AmountCurrency userDebtAmount = await GetUserDebt(payment.User.Id, payment.Currency);
+            return payment.Amount <= userDebtAmount.Amount;
         }
     }
 }
