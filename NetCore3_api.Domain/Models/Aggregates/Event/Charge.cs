@@ -37,14 +37,14 @@ namespace NetCore3_api.Domain.Models.Aggregates.Event
                 ValidationErrors.AddRange(Amount.ValidationErrors);
         }
 
-        public decimal GetUnPaidAmount()
+        public AmountCurrency GetUnPaidAmount()
         {
             decimal paidSum = 0;
             if (Payments != null && Payments.Count > 0)
                 paidSum = Payments.Sum(x => x.Amount);
             
             //Charge amount - paid amount total
-            return this.Amount.Amount - paidSum;
+            return new AmountCurrency(this.Amount.Amount - paidSum, this.Amount.Currency.Value);
         }
 
         public Currency? GetCurrency()

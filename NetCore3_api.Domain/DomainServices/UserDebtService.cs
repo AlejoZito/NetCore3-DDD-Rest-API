@@ -21,7 +21,33 @@ namespace NetCore3_api.Domain.DomainServices
         {
             _chargeRepository = chargeRepository;
         }
-        public async Task<AmountCurrency> GetUserDebt(long userId, Currency currency)
+
+        /// <summary>
+        /// Get the total amount of user debt grouped by currency
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<UserDebt> GetUserDebt(long userId)
+        {
+            var unPaidCharges = await _chargeRepository.ListAsync(x =>
+                x.Event.User.Id == userId &&
+                x.Payments.Sum(x => x.Amount) < x.Amount.Amount);
+
+            var userDebt = new UserDebt();
+
+            //Store debt separated by currency in value object
+            unPaidCharges.ForEach(c => userDebt.AddDebtAmount(c.GetUnPaidAmount()));
+
+            return userDebt;
+        }
+
+        /// <summary>
+        /// Gets the user's debt in a specific currency
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="currency"></param>
+        /// <returns></returns>
+        public async Task<AmountCurrency> GetUserDebtByCurrency(long userId, Currency currency)
         {
             //Get all charges that have not been fully paid, for this currency type
             var unPaidCharges = await _chargeRepository.ListAsync(x =>
@@ -30,7 +56,8 @@ namespace NetCore3_api.Domain.DomainServices
                 x.Payments.Sum(x => x.Amount) < x.Amount.Amount);
 
             if (unPaidCharges != null && unPaidCharges.Count > 0)
-                return new AmountCurrency(unPaidCharges.Sum(x => x.GetUnPaidAmount()), currency);
+                //Sum the unpaid amount of all unpaid charges
+                return new AmountCurrency(unPaidCharges.Sum(x => x.GetUnPaidAmount().Amount), currency);
             else
                 return new AmountCurrency(0, currency);
         }
@@ -44,7 +71,7 @@ namespace NetCore3_api.Domain.DomainServices
         /// <returns></returns>
         public async Task<bool> IsValidPayment(Payment payment)
         {
-            AmountCurrency userDebtAmount = await GetUserDebt(payment.User.Id, payment.Currency);
+            AmountCurrency userDebtAmount = await GetUserDebtByCurrency(payment.User.Id, payment.Currency);
             return payment.Amount <= userDebtAmount.Amount;
         }
     }

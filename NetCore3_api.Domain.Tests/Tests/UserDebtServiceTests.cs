@@ -19,7 +19,39 @@ namespace NetCore3_api.Domain.Tests.Tests
     public class UserDebtServiceTests
     {
         [Test]
-        public async Task ShouldGetCorrectDebt()
+        public async Task ShouldGetCorrectTotalDebt()
+        {
+            var chargeRepositoryMock = new Mock<IRepository<Charge>>();
+            chargeRepositoryMock.Setup(x => x.ListAsync(
+                It.IsAny<Expression<Func<Charge, bool>>>(),
+                It.IsAny<SortOptions>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>()))
+                .Returns((Expression<Func<Charge, bool>> predicate, SortOptions sortOptions, int? pageSize, int? pageNum) =>
+                //Return charges after applying UserDebtService's predicate
+                Task.FromResult(GetTestCharges().Where(predicate.Compile()).ToList()));
+
+            UserDebtService userDebtService = new UserDebtService(chargeRepositoryMock.Object);
+
+            UserDebt debt = await userDebtService.GetUserDebt(MockData.GetTestUser().Id);
+
+            Assert.Multiple(() =>
+            {
+                var arDebt = debt.GetDebtByCurrency().FirstOrDefault(x => x.Currency == Enumerations.Currency.ARS);
+                var usDebt = debt.GetDebtByCurrency().FirstOrDefault(x => x.Currency == Enumerations.Currency.US);
+
+                Assert.AreEqual(2, debt.GetDebtByCurrency().Count, "User should have debt in 2 currencies");
+
+                Assert.IsNotNull(arDebt, "Debt in AR$ currency should not be null");
+                Assert.AreEqual(63.75M, arDebt.Amount, "AR$ debt should be $63.75");
+
+                Assert.IsNotNull(usDebt, "Debt in U$ currency should not be null");
+                Assert.AreEqual(100, usDebt.Amount, "U$ debt should be $100");
+            });
+        }
+
+        [Test]
+        public async Task ShouldGetCorrectDebtByCurrency()
         {
             var chargeRepositoryMock = new Mock<IRepository<Charge>>();
             chargeRepositoryMock.Setup(x => x.ListAsync(
@@ -33,7 +65,7 @@ namespace NetCore3_api.Domain.Tests.Tests
 
             UserDebtService userDebtService = new UserDebtService(chargeRepositoryMock.Object);
 
-            AmountCurrency debt = await userDebtService.GetUserDebt(
+            AmountCurrency debt = await userDebtService.GetUserDebtByCurrency(
                 MockData.GetTestUser().Id, Enumerations.Currency.ARS);
 
             Assert.Multiple(() =>

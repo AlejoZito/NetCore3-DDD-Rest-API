@@ -10,7 +10,7 @@ namespace NetCore3_api.Domain.Contracts
 {
     public interface IUserDebtService
     {
-        Task<AmountCurrency> GetUserDebt(long userId, Currency currency);
+        Task<AmountCurrency> GetUserDebtByCurrency(long userId, Currency currency);
         Task<bool> IsValidPayment(Payment payment);
     }
 }
