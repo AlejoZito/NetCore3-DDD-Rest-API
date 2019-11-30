@@ -12,10 +12,11 @@ using System.Threading.Tasks;
 
 namespace NetCore3_api.Domain.DomainServices
 {
-    public class UserDebtService
+    public class UserDebtService : IUserDebtService
     {
         IRepository<Charge> _chargeRepository;
         IRepository<User> _userRepository;
+
         public UserDebtService(
             IRepository<Charge> chargeRepository,
             IRepository<User> userRepository)
@@ -38,43 +39,16 @@ namespace NetCore3_api.Domain.DomainServices
         }
 
         /// <summary>
-        /// Find available charges to pay for this user, with the same currency the payment has.
-        /// Assign a PaymentCharge entity to every charge that this payment can pay off.
+        /// Validate payment is valid for the user's debt.
+        /// e.g.: Payment cannot exceed user's debt
         /// </summary>
         /// <param name="payment"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task<List<PaymentCharge>> LinkPaymentToCharges(Payment payment, long userId)
+        public async Task<bool> IsValidPayment(Payment payment, long userId)
         {
-            List<PaymentCharge> generatedPaymentCharges = new List<PaymentCharge>();
-            //Get all charges that have not been fully paid, for this currency type
-            var unPaidCharges = await _chargeRepository.ListAsync(x =>
-                x.Event.User.Id == userId &&
-                x.Amount.Currency == payment.Currency &&
-                x.Payments.Sum(x => x.Amount) < x.Amount.Amount);
-
-            decimal paymentAmount = payment.Amount;
-            int i = 0;
-            while(paymentAmount > 0 && i < unPaidCharges.Count)
-            {
-                //decimal payedAmount = paymentAmount - unPaidCharges[i].Amount.Amount;
-
-                if(paymentAmount - unPaidCharges[i].Amount.Amount > 0)
-                {
-                    //Payment pays off the charge completely
-                    generatedPaymentCharges.Add(new PaymentCharge(unPaidCharges[i], payment, unPaidCharges[i].Amount.Amount));
-                    paymentAmount -= unPaidCharges[i].Amount.Amount;
-                }
-                else
-                {
-                    //The charge is partially paid
-                    generatedPaymentCharges.Add(new PaymentCharge(unPaidCharges[i], payment, paymentAmount));
-                    //This payment cannot payoff more charges
-                    paymentAmount = 0;
-                }
-            }
-
-            return generatedPaymentCharges;
+            AmountCurrency userDebtAmount = await GetUserDebt(userId, payment.Currency);
+            return payment.Amount > userDebtAmount.Amount;
         }
     }
 }

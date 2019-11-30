@@ -27,7 +27,7 @@ namespace NetCore3_api.Domain.Tests.Tests
             };
             Assert.DoesNotThrow(() =>
             {
-                //Add to valid april 2019 charges
+                //Add 2 valid april 2019 charges
                 invoice.AddCharge(GetTestCharge(new DateTime(2019, 4, 01)));
                 invoice.AddCharge(GetTestCharge(new DateTime(2019, 4, 23)));
             });
@@ -44,7 +44,7 @@ namespace NetCore3_api.Domain.Tests.Tests
         }
 
         [Test]
-        public void CannotAddInvalidCharges()
+        public void ShouldNotAllowToAddInvalidCharges()
         {
             Invoice invoice = new Invoice()
             {
