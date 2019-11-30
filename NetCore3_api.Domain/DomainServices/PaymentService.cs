@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace NetCore3_api.Domain.DomainServices
 {
-    class PaymentService
+    public class PaymentService
     {
         IRepository<Charge> _chargeRepository;
         IRepository<Payment> _paymentRepository;
@@ -69,18 +69,22 @@ namespace NetCore3_api.Domain.DomainServices
         {
             List<PaymentCharge> generatedPaymentCharges = new List<PaymentCharge>();
             //Get all charges that have not been fully paid, for this currency type
+            //orders result by id, so that oldest charges will be paid first.
             var unPaidCharges = await _chargeRepository.ListAsync(x =>
                 x.Event.User.Id == userId &&
                 x.Amount.Currency == payment.Currency &&
-                x.Payments.Sum(x => x.Amount) < x.Amount.Amount);
+                x.Payments.Sum(x => x.Amount) < x.Amount.Amount,
+                new SortOptions(nameof(Event.Date), SortOrder.Ascending));
 
+            //Variable that stores amount left on payment entity.
+            //When linked to a charge, the charge's amount is substracted.
             decimal paymentAmount = payment.Amount;
             int i = 0;
             while (paymentAmount > 0 && i < unPaidCharges.Count)
             {
                 //decimal payedAmount = paymentAmount - unPaidCharges[i].Amount.Amount;
 
-                if (paymentAmount - unPaidCharges[i].Amount.Amount > 0)
+                if (paymentAmount - unPaidCharges[i].Amount.Amount >= 0)
                 {
                     //Payment pays off the charge completely
                     generatedPaymentCharges.Add(new PaymentCharge(unPaidCharges[i], payment, unPaidCharges[i].Amount.Amount));
@@ -93,6 +97,7 @@ namespace NetCore3_api.Domain.DomainServices
                     //This payment cannot payoff more charges
                     paymentAmount = 0;
                 }
+                i++;
             }
 
             return generatedPaymentCharges;

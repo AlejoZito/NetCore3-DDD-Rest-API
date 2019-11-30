@@ -8,13 +8,12 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using NetCore3_api.Domain.Tests.Helpers;
 
 namespace NetCore3_api.Domain.Tests.Tests
 {
     public class InvoiceTests
     {
-        const string TEST_USERNAME = "Donatello";
-
         [Test]
         public void GetValidInvoiceTotalAmount()
         {
@@ -23,7 +22,7 @@ namespace NetCore3_api.Domain.Tests.Tests
                 Currency = Enumerations.Currency.ARS,
                 Month = 4,
                 Year = 2019,
-                User = GetTestUser()
+                User = MockData.GetTestUser()
             };
             Assert.DoesNotThrow(() =>
             {
@@ -51,7 +50,7 @@ namespace NetCore3_api.Domain.Tests.Tests
                 Currency = Enumerations.Currency.ARS,
                 Month = 4,
                 Year = 2019,
-                User = GetTestUser()
+                User = MockData.GetTestUser()
             };
             Assert.Throws(typeof(InvalidChargeException),() =>
             {
@@ -80,18 +79,9 @@ namespace NetCore3_api.Domain.Tests.Tests
                     Id = 1,
                     Date = date ?? DateTime.Now,
                     Type = new EventType() { },
-                    User = GetTestUser(),
+                    User = MockData.GetTestUser(),
                 },
                 Payments = new List<PaymentCharge>()
-            };
-        }
-
-        public User GetTestUser()
-        {
-            return new User()
-            {
-                Id = 1,
-                Username = TEST_USERNAME
             };
         }
     }
