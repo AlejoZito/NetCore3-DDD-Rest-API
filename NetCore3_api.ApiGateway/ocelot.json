@@ -6,12 +6,12 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5003
-        },
-        {
-          "Host": "localhost",
-          "Port": 5005
+          "Port": 12978
         }
+        //{
+        //  "Host": "localhost",
+        //  "Port": 5005
+        //}
       ],
       "UpstreamPathTemplate": "/{url}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
