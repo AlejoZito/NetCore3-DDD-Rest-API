@@ -19,12 +19,12 @@ namespace NetCore3_api.Domain.Models.Aggregates.User
         {
             Charges = new List<Charge>();
         }
-        public Invoice(int month, int year, Currency? currency, User user)
+        public Invoice(int month, int year, Currency currency, User user)
         {
             Charges = new List<Charge>();
             Month = month;
             Year = year;
-            Currency = Currency;
+            Currency = currency;
             User = user;
         }
 

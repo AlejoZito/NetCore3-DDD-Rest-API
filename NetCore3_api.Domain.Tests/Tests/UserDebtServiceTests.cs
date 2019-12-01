@@ -37,10 +37,10 @@ namespace NetCore3_api.Domain.Tests.Tests
 
             Assert.Multiple(() =>
             {
-                var arDebt = debt.GetDebtByCurrency().FirstOrDefault(x => x.Currency == Enumerations.Currency.ARS);
-                var usDebt = debt.GetDebtByCurrency().FirstOrDefault(x => x.Currency == Enumerations.Currency.US);
+                var arDebt = debt.GetDebtAmountsByCurrency().FirstOrDefault(x => x.Currency == Enumerations.Currency.ARS);
+                var usDebt = debt.GetDebtAmountsByCurrency().FirstOrDefault(x => x.Currency == Enumerations.Currency.US);
 
-                Assert.AreEqual(2, debt.GetDebtByCurrency().Count, "User should have debt in 2 currencies");
+                Assert.AreEqual(2, debt.GetDebtAmountsByCurrency().Count, "User should have debt in 2 currencies");
 
                 Assert.IsNotNull(arDebt, "Debt in AR$ currency should not be null");
                 Assert.AreEqual(63.75M, arDebt.Amount, "AR$ debt should be $63.75");

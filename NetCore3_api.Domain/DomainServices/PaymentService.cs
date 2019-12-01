@@ -41,7 +41,7 @@ namespace NetCore3_api.Domain.DomainServices
             Payment payment = new Payment(amount, (Currency)foundCurrency, user);
             if (payment.IsValid())
             {
-                //1) Validate payment is valid with business rules (DOES NOT EXCEED USER DEBTH)
+                //1) Validate payment is valid with business rules (DOES NOT EXCEED USER DEBT)
                 if (await _userDebtService.IsValidPayment(payment) == false)
                 {
                     payment.ValidationErrors.Add(new ValidationError(nameof(Payment.Amount), "Payment amount cannot exceed current user's debt"));
@@ -74,11 +74,6 @@ namespace NetCore3_api.Domain.DomainServices
             //Get all charges that have not been fully paid, for this currency type
             //orders result by id, so that oldest charges will be paid first.
             var unPaidCharges = await _userDebtService.GetUnpaidCharges(userId, payment.Currency);
-            //var unPaidCharges = await _chargeRepository.ListAsync(x =>
-            //    x.Event.User.Id == userId &&
-            //    x.Amount.Currency == payment.Currency &&
-            //    x.Payments.Sum(x => x.Amount) < x.Amount.Amount,
-            //    new SortOptions(nameof(Charge.Id), SortOrder.Ascending));
 
             //Variable that stores amount left on payment entity.
             //When linked to a charge, the charge's amount is substracted.
@@ -88,12 +83,12 @@ namespace NetCore3_api.Domain.DomainServices
             {
                 decimal chargeUnPaidAmount = unPaidCharges[i].GetUnPaidAmount().Amount;
 
-                //Check if payment's $ left can pay the charges full debth
+                //Check if payment's $ left can pay the charges full debt
                 if (paymentAmountLeft - chargeUnPaidAmount >= 0)
                 {
                     //The charge is payed completely
                     generatedPaymentCharges.Add(new PaymentCharge(unPaidCharges[i], payment, chargeUnPaidAmount));
-                    paymentAmountLeft -= chargeUnPaidAmount; //Substract the amount of the remaining charge debth
+                    paymentAmountLeft -= chargeUnPaidAmount; //Substract the amount of the remaining charge debt
                 }
                 else
                 {

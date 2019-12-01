@@ -31,8 +31,8 @@ namespace NetCore3_api.Domain.DomainServices
         {
             var unPaidCharges = await _chargeRepository.ListAsync(x =>
                 x.Event.User.Id == userId &&
-                x.Payments.Sum(x => x.Amount) < x.Amount.Amount);
-
+                (x.Payments.Sum(x => (decimal?)x.Amount) ?? 0) < x.Amount.Amount); //Nullable cast required to create query like "SELECT ISNULL(SUM([p].[Amount]),0)"
+            
             var userDebt = new UserDebt();
 
             //Store debt separated by currency in value object

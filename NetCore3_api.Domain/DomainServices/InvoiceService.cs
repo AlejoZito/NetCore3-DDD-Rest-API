@@ -25,8 +25,11 @@ namespace NetCore3_api.Domain.DomainServices
             int month = 0;
             int year = 0;
 
+            if(!chargeCurrency.HasValue)
+                throw new InvalidEntityException(charge);
+
             //Try to get month and year from charge event
-            if(charge.Event != null && charge.Event.Date != default(DateTime))
+            if (charge.Event != null && charge.Event.Date != default(DateTime))
             {
                 month = charge.Event.Date.Month;
                 year = charge.Event.Date.Year;
@@ -44,7 +47,7 @@ namespace NetCore3_api.Domain.DomainServices
                 Invoice newInvoice = new Invoice(
                     month,
                     year,
-                    chargeCurrency,
+                    chargeCurrency.Value,
                     user
                 );
 

@@ -7,15 +7,15 @@ namespace NetCore3_api.Domain.Models.ValueObjects
 {
     public class UserDebt
     {
-        private readonly List<AmountCurrency> DebtByCurrency;
+        private readonly List<AmountCurrency> DebtAmountsByCurrency;
         public UserDebt()
         {
-            DebtByCurrency = new List<AmountCurrency>();
+            DebtAmountsByCurrency = new List<AmountCurrency>();
         }
         public void AddDebtAmount(AmountCurrency debtAmount)
         {
             //Check if this currency exists in the DebtByCurrency list
-            var debtItem = DebtByCurrency.FirstOrDefault(x => x.Currency == debtAmount.Currency);
+            var debtItem = DebtAmountsByCurrency.FirstOrDefault(x => x.Currency == debtAmount.Currency);
             if(debtItem != null)
             {
                 debtItem.Amount += debtAmount.Amount;
@@ -24,12 +24,12 @@ namespace NetCore3_api.Domain.Models.ValueObjects
             {
                 //If no amount with this currency has been added yet,
                 //create a new item and add this amount
-                DebtByCurrency.Add(new AmountCurrency(debtAmount.Amount, debtAmount.Currency.Value));
+                DebtAmountsByCurrency.Add(new AmountCurrency(debtAmount.Amount, debtAmount.Currency.Value));
             }
         }
-        public List<AmountCurrency> GetDebtByCurrency()
+        public List<AmountCurrency> GetDebtAmountsByCurrency()
         {
-            return DebtByCurrency;
+            return DebtAmountsByCurrency;
         }
     }
 }

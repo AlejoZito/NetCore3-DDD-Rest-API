@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using NetCore3_api.Domain.Models.Aggregates.Event;
 using NetCore3_api.Domain.Models.Aggregates.Payment;
+using NetCore3_api.Domain.Models.ValueObjects;
 using NetCore3_api.WebApi.DTOs;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,13 @@ namespace NetCore3_api.WebApi.Mapping
                 .ForMember(dest => dest.Payments, options => options.MapFrom(x => x.Payments));
 
             CreateMap<Payment, GetPaymentResponse>();
-            CreateMap<PaymentCharge, GetPaymentChargeResponse>();                
+            CreateMap<PaymentCharge, GetPaymentChargeResponse>();
+
+            CreateMap<UserDebt, GetUserDebtResponse>()
+                .ForMember(dest => dest.DebtAmounts, options => options.MapFrom(x => x.GetDebtAmountsByCurrency()));
+            CreateMap<AmountCurrency, AmountCurrencyResponse>()
+                .ForMember(x => x.Amount, options => options.MapFrom(x => x.Amount))
+                .ForMember(x => x.Currency, options => options.MapFrom(x => x.Currency.Value.ToString()));
         }
     }
 }
