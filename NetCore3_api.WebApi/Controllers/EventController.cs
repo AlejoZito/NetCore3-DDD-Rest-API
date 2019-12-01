@@ -54,12 +54,14 @@ namespace NetCore3_api.WebApi.Controllers
             [FromRoute]long userId,
             [FromBody]CreateEventRequest createEventRequest)
         {
+            InvoiceService invoiceService = new InvoiceService(_invoiceRepository);
+
             //Get charge domain service
             ChargeService chargeService = new ChargeService(
                 _chargeRepository,
                 _eventTypeRepository,
-                _invoiceRepository,
-                _userRepository);
+                _userRepository,
+                invoiceService);
 
             try
             {

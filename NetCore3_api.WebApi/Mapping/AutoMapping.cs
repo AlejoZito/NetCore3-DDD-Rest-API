@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using NetCore3_api.Domain.Models.Aggregates.Event;
 using NetCore3_api.Domain.Models.Aggregates.Payment;
+using NetCore3_api.Domain.Models.Aggregates.User;
 using NetCore3_api.Domain.Models.ValueObjects;
 using NetCore3_api.WebApi.DTOs;
 using System;
@@ -36,6 +37,12 @@ namespace NetCore3_api.WebApi.Mapping
             CreateMap<AmountCurrency, AmountCurrencyResponse>()
                 .ForMember(x => x.Amount, options => options.MapFrom(x => x.Amount))
                 .ForMember(x => x.Currency, options => options.MapFrom(x => x.Currency.Value.ToString()));
+
+            CreateMap<Invoice, GetInvoiceResponse>()
+                .ForMember(x => x.Charges, options => options.MapFrom(x => x.Charges)) //ToDo: remover referencia a Payments desde estos cargos
+                .ForMember(x => x.Payments, options => options.MapFrom(x => x.Payments));
+            CreateMap<List<Invoice>, GetInvoicesResponse>()
+                .ForMember(x => x.Invoices, options => options.MapFrom(x => x));
         }
     }
 }

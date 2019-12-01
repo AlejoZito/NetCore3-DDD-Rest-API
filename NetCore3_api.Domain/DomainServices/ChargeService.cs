@@ -15,18 +15,18 @@ namespace NetCore3_api.Domain.DomainServices
     {
         readonly IRepository<Charge> _chargeRepository;
         readonly IRepository<EventType> _eventTypeRepository;
-        readonly IRepository<Invoice> _invoiceRepository;
         readonly IRepository<User> _userRepository;
+        readonly IInvoiceService _invoiceService;
         public ChargeService(
             IRepository<Charge> chargeRepository,
             IRepository<EventType> eventTypeRepository,
-            IRepository<Invoice> invoiceRepository,
-            IRepository<User> userRepository)
+            IRepository<User> userRepository,
+            IInvoiceService invoiceService)
         {
             _chargeRepository = chargeRepository;
             _eventTypeRepository = eventTypeRepository;
-            _invoiceRepository = invoiceRepository;
             _userRepository = userRepository;
+            _invoiceService = invoiceService;
         }
         public async Task<Charge> CreateChargeWithEvent(
             decimal amount,
@@ -55,9 +55,8 @@ namespace NetCore3_api.Domain.DomainServices
 
             if (charge.IsValid())
             {
-                InvoiceService invoiceService = new InvoiceService(_invoiceRepository);
                 //Add charge to existing invoice or create a new one
-                await invoiceService.AddCharge(charge, user);
+                await _invoiceService.AddCharge(charge, user);
 
                 return _chargeRepository.Insert(charge);
             }

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Moq;
 using NetCore3_api.Domain.Contracts;
@@ -9,6 +11,7 @@ using NetCore3_api.Domain.Models.Aggregates.Event;
 using NetCore3_api.Domain.Models.Aggregates.Payment;
 using NetCore3_api.Domain.Models.Aggregates.User;
 using NetCore3_api.Domain.Models.ValueObjects;
+using NetCore3_api.Domain.Tests.Helpers;
 using NUnit.Framework;
 namespace NetCore3_api.Domain.Tests
 {
@@ -48,6 +51,56 @@ namespace NetCore3_api.Domain.Tests
                     Assert.AreEqual(Currency.ARS, newInvoice.Currency, "Invoice currency must be ARS");
                 });
             }
+        }
+
+        [Test]
+        public async Task MustQueryCorrectInvoices()
+        {
+            var testUser = MockData.GetTestUser();
+            var testInvoices = new List<Invoice>()
+            {
+                new Invoice(11, 2018, Currency.ARS, testUser),
+                new Invoice(12, 2018, Currency.ARS, testUser),
+                new Invoice(01, 2019, Currency.ARS, testUser),
+                new Invoice(01, 2019, Currency.US, testUser),
+                new Invoice(02, 2019, Currency.ARS, testUser),
+                new Invoice(03, 2019, Currency.ARS, testUser),
+            };
+            
+            var invoiceRepositoryMock = new Mock<IRepository<Invoice>>();
+
+            //Return value passed to repository when calling INSERT
+            invoiceRepositoryMock.Setup(x => x.ListAsync(
+                It.IsAny<Expression<Func<Invoice, bool>>>(),
+                It.IsAny<SortOptions>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>()))
+                .Returns((Expression<Func<Invoice, bool>> predicate, SortOptions sortOptions, int? pageSize, int? pageNum) =>
+                //Return invoices after applying InvoiceService's predicate
+                Task.FromResult(testInvoices.Where(predicate.Compile()).ToList()));
+
+            InvoiceService invoiceService = new InvoiceService(invoiceRepositoryMock.Object);
+
+            List<Invoice> invoicesResult = await invoiceService.GetInvoicesForUser(
+                userId: testUser.Id,
+                fromYear: 2018,
+                fromMonth: 12,
+                toYear: 2019,
+                toMonth: 2);
+
+            Assert.AreEqual(4, invoicesResult.Count, "Query should return 4 invoices");
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(12, invoicesResult[0].Month, "First invoice should be December 2018");
+                Assert.AreEqual(2018, invoicesResult[0].Year, "First invoice should be December 2018");
+                Assert.AreEqual(01, invoicesResult[1].Month, "Second invoice should be January 2019");
+                Assert.AreEqual(2019, invoicesResult[1].Year, "Second invoice should be January 2019");
+                Assert.AreEqual(01, invoicesResult[2].Month, "Third invoice should be January 2019");
+                Assert.AreEqual(2019, invoicesResult[2].Year, "Third invoice should be January 2019");
+                Assert.AreEqual(Currency.US, invoicesResult[2].Currency, "Third invoice should be in U$ currency");
+                Assert.AreEqual(02, invoicesResult[3].Month, "Fourth invoice should be February 2019");
+                Assert.AreEqual(2019, invoicesResult[3].Year, "Fourth invoice should be February 2019");
+            });           
         }
 
         //ToDo: mover a infrastructure/integration tests

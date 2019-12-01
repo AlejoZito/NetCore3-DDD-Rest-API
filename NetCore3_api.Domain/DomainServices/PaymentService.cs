@@ -15,17 +15,17 @@ namespace NetCore3_api.Domain.DomainServices
 {
     public class PaymentService
     {
-        IRepository<Charge> _chargeRepository;
         IRepository<Payment> _paymentRepository;
         IRepository<User> _userRepository;
         IUserDebtService _userDebtService;
+        IInvoiceService _invoiceService;
         public PaymentService(
-            IRepository<Charge> chargeRepository,
             IRepository<Payment> paymentRepository,
             IRepository<User> userRepository,
-            IUserDebtService userDebtService)
+            IUserDebtService userDebtService,
+            IInvoiceService invoiceService)
         {
-            _chargeRepository = chargeRepository;
+            _invoiceService = invoiceService;
             _paymentRepository = paymentRepository;
             _userRepository = userRepository;
             _userDebtService = userDebtService;
@@ -53,6 +53,9 @@ namespace NetCore3_api.Domain.DomainServices
 
                 //3) Add linked charges to payment
                 payment.Charges = linkedCharges;
+
+                //4) Add payment to invoice
+                await _invoiceService.AddPayment(payment, user);
 
                 //Persist
                 return _paymentRepository.Insert(payment);

@@ -19,6 +19,7 @@ namespace NetCore3_api.Infrastructure
         public DbSet<EventType> EventTypes { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Payment> Payments { get; set; }
+        public DbSet<Invoice> Invoices { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

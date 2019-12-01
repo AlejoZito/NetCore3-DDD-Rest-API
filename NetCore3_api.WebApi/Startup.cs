@@ -49,10 +49,9 @@ namespace NetCore3_api.WebApi
 
             services.AddScoped<IRepository<Charge>, ChargeRepository>();
             services.AddScoped<IRepository<EventType>, EventTypeRepository>();
-            services.AddScoped<IRepository<Invoice>, BaseRepository<Invoice>>();
-            services.AddScoped<IRepository<Payment>, BaseRepository<Payment>>();
+            services.AddScoped<IRepository<Invoice>, InvoiceRepository>();
+            services.AddScoped<IRepository<Payment>, PaymentRepository>();
             services.AddScoped<IRepository<User>, BaseRepository<User>>();
-
 
             //services.AddAutoMapper(typeof(Startup));
             services.AddAutoMapper(cfg =>

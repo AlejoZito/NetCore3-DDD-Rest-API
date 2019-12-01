@@ -25,18 +25,21 @@ namespace NetCore3_api.WebApi.Controllers
         readonly IRepository<Payment> _paymentRepository;
         readonly IRepository<Charge> _chargeRepository;
         readonly IRepository<User> _userRepository;
+        readonly IRepository<Invoice> _invoiceRepository;
         readonly IMapper _mapper;
         readonly AppDbContext _dbContext;
         public PaymentController(
             IRepository<Payment> paymentRepository,
             IRepository<Charge> chargeRepository,
             IRepository<User> userRepository,
+            IRepository<Invoice> invoiceRepository,
             IMapper mapper,
             AppDbContext dbContext)
         {
             _paymentRepository = paymentRepository;
             _chargeRepository = chargeRepository;
             _userRepository = userRepository;
+            _invoiceRepository = invoiceRepository;
             _mapper = mapper;
             _dbContext = dbContext;
         }
@@ -51,13 +54,14 @@ namespace NetCore3_api.WebApi.Controllers
             [FromBody]CreatePaymentRequest createPaymentRequest)
         {
             UserDebtService userDebtService = new UserDebtService(_chargeRepository);
+            InvoiceService invoiceService = new InvoiceService(_invoiceRepository);
 
             //Get charge domain service
             PaymentService paymentService = new PaymentService(
-                _chargeRepository,
                 _paymentRepository,
                 _userRepository,
-                userDebtService);
+                userDebtService,
+                invoiceService);
 
             try
             {

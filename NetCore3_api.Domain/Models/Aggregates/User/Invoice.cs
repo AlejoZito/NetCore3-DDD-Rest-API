@@ -2,6 +2,7 @@
 using NetCore3_api.Domain.Contracts.Exceptions;
 using NetCore3_api.Domain.Enumerations;
 using NetCore3_api.Domain.Models.Aggregates.Event;
+using NetCore3_api.Domain.Models.Aggregates.Payment;
 using NetCore3_api.Domain.Models.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -18,10 +19,12 @@ namespace NetCore3_api.Domain.Models.Aggregates.User
         public Invoice()
         {
             Charges = new List<Charge>();
+            Payments = new List<Payment.Payment>();
         }
         public Invoice(int month, int year, Currency currency, User user)
         {
             Charges = new List<Charge>();
+            Payments = new List<Payment.Payment>();
             Month = month;
             Year = year;
             Currency = currency;
@@ -30,7 +33,8 @@ namespace NetCore3_api.Domain.Models.Aggregates.User
 
         public int Month { get; set; }
         public int Year { get; set; }
-        private List<Charge> Charges { get; set; }
+        public List<Charge> Charges { get; set; }
+        public List<Payment.Payment> Payments { get; set; }
         public Currency Currency { get; set; }
         public User User { get; set; }
         public List<ValidationError> ValidationErrors { get; set; }
@@ -56,6 +60,31 @@ namespace NetCore3_api.Domain.Models.Aggregates.User
             
             Charges.Add(charge);
         }
+
+        public void AddPayment(Payment.Payment payment)
+        {
+            if (payment.Amount == 0)
+                throw new InvalidChargeException("Cannot add payment to invoice, invalid amount");
+            if (payment.Currency != this.Currency)
+                throw new InvalidChargeException("Cannot add payment to invoice, invalid currency");
+            if (payment.Date.Year != this.Year || payment.Date.Month != this.Month)
+                throw new InvalidChargeException("Cannot add payment to invoice, invalid charge date");
+            Payments.Add(payment);
+        }
+
+        //public List<Payment.Payment> GetInvoicePayments()
+        //{
+        //    var payments = new HashSet<Payment.Payment>();
+
+        //    //Select distinct payments from charges
+        //    foreach(var charge in Charges)
+        //    {
+        //        if (charge.Payments != null && charge.Payments.Count > 0)
+        //            charge.Payments.ForEach(x => payments.Add(x.Payment));
+        //    }
+
+        //    return payments.ToList();
+        //}
 
         public bool IsValid()
         {

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetCore3_api.Infrastructure;
 
 namespace NetCore3_api.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191201175408_InvoiceFK")]
+    partial class InvoiceFK
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -184,15 +186,10 @@ namespace NetCore3_api.Infrastructure.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<long?>("InvoiceId")
-                        .HasColumnType("bigint");
-
                     b.Property<long?>("UserId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("InvoiceId");
 
                     b.HasIndex("UserId");
 
@@ -333,10 +330,6 @@ namespace NetCore3_api.Infrastructure.Migrations
 
             modelBuilder.Entity("NetCore3_api.Domain.Models.Aggregates.Payment.Payment", b =>
                 {
-                    b.HasOne("NetCore3_api.Domain.Models.Aggregates.User.Invoice", null)
-                        .WithMany("Payments")
-                        .HasForeignKey("InvoiceId");
-
                     b.HasOne("NetCore3_api.Domain.Models.Aggregates.User.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");

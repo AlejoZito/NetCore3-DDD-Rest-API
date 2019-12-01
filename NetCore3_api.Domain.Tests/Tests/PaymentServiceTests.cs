@@ -57,11 +57,13 @@ namespace NetCore3_api.Domain.Tests.Tests
             userDebtService.Setup(x => x.IsValidPayment(It.IsAny<Payment>()))
                     .Returns(Task.FromResult(true));
 
+            var invoiceService = new Mock<IInvoiceService>();
+
             PaymentService paymentService = new PaymentService(
-                chargeRepository.Object,
                 paymentRepository.Object,
                 userRepository.Object,
-                userDebtService.Object);
+                userDebtService.Object,
+                invoiceService.Object);
 
             Payment createdPayment = await paymentService.ExecutePayment(200, "ARS", 1);
 
@@ -115,12 +117,14 @@ namespace NetCore3_api.Domain.Tests.Tests
             var userDebtService = new Mock<IUserDebtService>();
             userDebtService.Setup(x => x.IsValidPayment(It.IsAny<Payment>()))
                 .Returns(Task.FromResult(true));
+            
+            var invoiceService = new Mock<IInvoiceService>();
 
             PaymentService paymentService = new PaymentService(
-                chargeRepository.Object,
                 paymentRepository.Object,
                 userRepository.Object,
-                userDebtService.Object);
+                userDebtService.Object,
+                invoiceService.Object);
 
             Payment createdPayment = await paymentService.ExecutePayment(200, "ARS", 1);
 
@@ -170,13 +174,15 @@ namespace NetCore3_api.Domain.Tests.Tests
                     .Returns((Payment p)=>Task.FromResult(p.Amount <= testCharge.GetUnPaidAmount().Amount));
             //Setup debt service to always return charge variable
             userDebtService.Setup(x => x.GetUnpaidCharges(It.IsAny<long>(), It.IsAny<Currency>()))
-                .Returns(Task.FromResult(new List<Charge>() { testCharge }));
+                    .Returns(Task.FromResult(new List<Charge>() { testCharge }));
+            
+            var invoiceService = new Mock<IInvoiceService>();
 
             PaymentService paymentService = new PaymentService(
-                chargeRepository.Object,
                 paymentRepository.Object,
                 userRepository.Object,
-                userDebtService.Object);
+                userDebtService.Object,
+                invoiceService.Object);
 
             Payment firstPayment = await paymentService.ExecutePayment(50, "ARS", 1);
             testCharge.Payments.Add(new PaymentCharge(testCharge, firstPayment, 50));
