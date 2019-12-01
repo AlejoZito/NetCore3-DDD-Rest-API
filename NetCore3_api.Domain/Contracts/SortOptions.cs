@@ -27,6 +27,25 @@ namespace NetCore3_api.Domain.Contracts
             return new SortOptions(nameof(Entity.Id), SortOrder.Descending);
         }
     }
+    public class SortOrderHelper
+    {
+        public static bool TryParse(string sortOrderString, out SortOrder parsedSortOrder)
+        {
+            if (sortOrderString.ToUpper() == "ASC" || sortOrderString.ToUpper() == SortOrder.Ascending.ToString().ToUpper())
+            {
+                parsedSortOrder = SortOrder.Ascending;
+                return true;
+            }
+            else if (sortOrderString.ToUpper() == "DESC" || sortOrderString.ToUpper() == SortOrder.Descending.ToString().ToUpper())
+            {
+                parsedSortOrder = SortOrder.Descending;
+                return true;
+            }
+            else
+                parsedSortOrder = default(SortOrder);
+                return false;
+        }
+    }
     public enum SortOrder
     {
         Ascending,

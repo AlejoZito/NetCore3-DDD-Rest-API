@@ -72,20 +72,6 @@ namespace NetCore3_api.Domain.Models.Aggregates.User
             Payments.Add(payment);
         }
 
-        //public List<Payment.Payment> GetInvoicePayments()
-        //{
-        //    var payments = new HashSet<Payment.Payment>();
-
-        //    //Select distinct payments from charges
-        //    foreach(var charge in Charges)
-        //    {
-        //        if (charge.Payments != null && charge.Payments.Count > 0)
-        //            charge.Payments.ForEach(x => payments.Add(x.Payment));
-        //    }
-
-        //    return payments.ToList();
-        //}
-
         public bool IsValid()
         {
             Validate();
@@ -99,8 +85,8 @@ namespace NetCore3_api.Domain.Models.Aggregates.User
                 ValidationErrors.Add(new ValidationError(nameof(Month), "Invalid month"));
             if (Year == 0)
                 ValidationErrors.Add(new ValidationError(nameof(Year), "Invalid year"));
-
-            //ToDo: Validate charge list exists and has items
+            if(Charges == null || Charges.Count == 0)
+                ValidationErrors.Add(new ValidationError(nameof(Charges), "The invoice must have at least 1 charge"));
         }
     }
 }

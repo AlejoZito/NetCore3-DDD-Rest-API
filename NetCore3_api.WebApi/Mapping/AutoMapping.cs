@@ -39,7 +39,7 @@ namespace NetCore3_api.WebApi.Mapping
                 .ForMember(x => x.Currency, options => options.MapFrom(x => x.Currency.Value.ToString()));
 
             CreateMap<Invoice, GetInvoiceResponse>()
-                .ForMember(x => x.Charges, options => options.MapFrom(x => x.Charges)) //ToDo: remover referencia a Payments desde estos cargos
+                .ForMember(x => x.Charges, options => options.MapFrom(x => x.Charges))
                 .ForMember(x => x.Payments, options => options.MapFrom(x => x.Payments));
             CreateMap<List<Invoice>, GetInvoicesResponse>()
                 .ForMember(x => x.Invoices, options => options.MapFrom(x => x));

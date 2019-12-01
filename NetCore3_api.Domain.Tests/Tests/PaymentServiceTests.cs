@@ -23,13 +23,7 @@ namespace NetCore3_api.Domain.Tests.Tests
         [Test]
         public async Task PaymentShouldFulfilCompletelyTwoCharges()
         {
-            var chargeRepository = new Mock<IRepository<Charge>>();
-            chargeRepository.Setup(x => x.ListAsync(
-                It.IsAny<Expression<Func<Charge, bool>>>(),
-                It.IsAny<SortOptions>(),
-                It.IsAny<int?>(),
-                It.IsAny<int?>()))
-                .Returns(Task.FromResult(new List<Charge>(){
+            var testCharges = new List<Charge>(){
                     new Charge(){
                         Id = 1,
                         Amount = new AmountCurrency(150, Enumerations.Currency.ARS),
@@ -41,8 +35,17 @@ namespace NetCore3_api.Domain.Tests.Tests
                     new Charge(){
                         Id = 3,
                         Amount = new AmountCurrency(10, Enumerations.Currency.ARS),
-                        Event = new Event(){Date = new DateTime(2019, 1,3) } }
-                }.OrderBy(x => x.Event.Date).ToList()));
+                        Event = new Event(){Date = new DateTime(2019, 1,3) }
+                    }
+            };
+
+            var chargeRepository = new Mock<IRepository<Charge>>();
+            chargeRepository.Setup(x => x.ListAsync(
+                It.IsAny<Expression<Func<Charge, bool>>>(),
+                It.IsAny<SortOptions>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>()))
+                .Returns(Task.FromResult(testCharges.OrderBy(x => x.Event.Date).ToList()));
 
             //Setup mock to return "inserted" entity
             var paymentRepository = new Mock<IRepository<Payment>>();
@@ -56,6 +59,9 @@ namespace NetCore3_api.Domain.Tests.Tests
             var userDebtService = new Mock<IUserDebtService>();
             userDebtService.Setup(x => x.IsValidPayment(It.IsAny<Payment>()))
                     .Returns(Task.FromResult(true));
+            //Setup userdebt service to always return test charges as unpaid charges
+            userDebtService.Setup(x => x.GetUnpaidCharges(It.IsAny<long>(), It.IsAny<Currency>()))
+                    .Returns(Task.FromResult(testCharges.OrderBy(x => x.Event.Date).ToList()));
 
             var invoiceService = new Mock<IInvoiceService>();
 
@@ -88,13 +94,7 @@ namespace NetCore3_api.Domain.Tests.Tests
         [Test]
         public async Task PaymentShouldFulfilPartiallyTwoCharges()
         {
-            var chargeRepository = new Mock<IRepository<Charge>>();
-            chargeRepository.Setup(x => x.ListAsync(
-                It.IsAny<Expression<Func<Charge, bool>>>(),
-                It.IsAny<SortOptions>(),
-                It.IsAny<int?>(),
-                It.IsAny<int?>()))
-                .Returns(Task.FromResult(new List<Charge>(){
+            var testCharges = new List<Charge>(){
                     new Charge(){
                         Id = 1,
                         Amount = new AmountCurrency(150, Enumerations.Currency.ARS),
@@ -102,8 +102,17 @@ namespace NetCore3_api.Domain.Tests.Tests
                     new Charge(){
                         Id = 2,
                         Amount = new AmountCurrency(200, Enumerations.Currency.ARS),
-                        Event = new Event(){Date = new DateTime(2019, 2,1) }}
-                }.OrderBy(x => x.Event.Date).ToList()));
+                        Event = new Event(){Date = new DateTime(2019, 2,1) }
+                    }
+            };
+
+            var chargeRepository = new Mock<IRepository<Charge>>();
+            chargeRepository.Setup(x => x.ListAsync(
+                It.IsAny<Expression<Func<Charge, bool>>>(),
+                It.IsAny<SortOptions>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>()))
+                .Returns(Task.FromResult(testCharges.OrderBy(x => x.Event.Date).ToList()));
 
             //Setup mock to return "inserted" entity
             var paymentRepository = new Mock<IRepository<Payment>>();
@@ -117,7 +126,10 @@ namespace NetCore3_api.Domain.Tests.Tests
             var userDebtService = new Mock<IUserDebtService>();
             userDebtService.Setup(x => x.IsValidPayment(It.IsAny<Payment>()))
                 .Returns(Task.FromResult(true));
-            
+            //Setup userdebt service to always return test charges as unpaid charges
+            userDebtService.Setup(x => x.GetUnpaidCharges(It.IsAny<long>(), It.IsAny<Currency>()))
+                    .Returns(Task.FromResult(testCharges.OrderBy(x => x.Event.Date).ToList()));
+
             var invoiceService = new Mock<IInvoiceService>();
 
             PaymentService paymentService = new PaymentService(

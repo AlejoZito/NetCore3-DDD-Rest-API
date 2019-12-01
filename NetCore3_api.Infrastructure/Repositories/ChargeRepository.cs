@@ -17,10 +17,23 @@ namespace NetCore3_api.Infrastructure.Repositories
         public ChargeRepository(AppDbContext dbContext) : base(dbContext) { }
         public override async Task<List<Charge>> ListAsync(SortOptions sortOptions = null, int? pageSize = int.MaxValue, int? pageNumber = 1)
         {
+            if (sortOptions == null)
+                sortOptions = SortOptions.GetDefaultValue();
+            if (!pageSize.HasValue)
+                pageSize = int.MaxValue;
+            if (!pageNumber.HasValue)
+                pageNumber = 1;
+
+            if (pageSize <= 0)
+                throw new ArgumentException("Page size must be greater than zero");
+
             return await _dbContext.Charges
                 .Include(x => x.Payments).ThenInclude(x => x.Payment)
                 .Include(x => x.Event).ThenInclude(x => x.User)
                 .Include(x => x.Event).ThenInclude(x => x.Type).ThenInclude(x=>x.Category)
+                .OrderBy(sortOptions.Column + " " + (sortOptions.Order == SortOrder.Ascending ? "ASC" : "DESC"))
+                .Skip((pageNumber.Value - 1) * pageSize.Value)
+                .Take(pageSize.Value)
                 .ToListAsync();
         }
         public override async Task<List<Charge>> ListAsync(
@@ -28,11 +41,24 @@ namespace NetCore3_api.Infrastructure.Repositories
             SortOptions sortOptions = null, 
             int? pageSize = int.MaxValue, int? pageNumber = 1)
         {
+            if (sortOptions == null)
+                sortOptions = SortOptions.GetDefaultValue();
+            if (!pageSize.HasValue)
+                pageSize = int.MaxValue;
+            if (!pageNumber.HasValue)
+                pageNumber = 1;
+
+            if (pageSize <= 0)
+                throw new ArgumentException("Page size must be greater than zero");
+
             return await _dbContext.Charges
                 .Include(x => x.Payments).ThenInclude(x => x.Payment)
                 .Include(x => x.Event).ThenInclude(x => x.User)
                 .Include(x => x.Event).ThenInclude(x => x.Type).ThenInclude(x => x.Category)
                 .Where(predicate)
+                .OrderBy(sortOptions.Column + " " + (sortOptions.Order == SortOrder.Ascending ? "ASC" : "DESC"))
+                .Skip((pageNumber.Value - 1) * pageSize.Value)
+                .Take(pageSize.Value)
                 .ToListAsync();
         }
         public override Task<Charge> FindByIdAsync(long id)

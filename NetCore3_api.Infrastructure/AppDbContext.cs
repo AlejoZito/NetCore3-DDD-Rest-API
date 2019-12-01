@@ -70,7 +70,6 @@ namespace NetCore3_api.Infrastructure
         public override int SaveChanges()
         {
             //ToDo: Domain event handling
-
             return base.SaveChanges();
         }
     }

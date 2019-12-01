@@ -42,7 +42,7 @@ namespace NetCore3_api.WebApi.Controllers
         {
             InvoiceService invoiceService = new InvoiceService(_invoiceRepository);
 
-            //<FROM, TO>
+            //Tuple stores <FROM, TO> periods
             Tuple<MonthYearDTO, MonthYearDTO> periodToSearch = getInvoiceRequest.GetPeriodToSearch();
 
             var invoices = await invoiceService.GetInvoicesForUser(

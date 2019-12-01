@@ -81,12 +81,20 @@ namespace NetCore3_api.WebApi.Controllers
         // GET: api/payments
         [HttpGet("users/{userId}/payments")]
         [Produces(typeof(GetPaymentResponse))]
-        public async Task<ActionResult> Get(long userId, int? pageSize = null, int? pageNumber = null)
+        public async Task<ActionResult> Get(long userId, int? pageSize = null, int? pageNumber = null, string sortOrder = null)
         {
-            //ToDo implement pagination
+            SortOrder parsedSortOrder = SortOrder.Descending; //Default sort order shows most recent items first
+
+            if (!string.IsNullOrEmpty(sortOrder))
+            {
+                //If sort order is not null, check it has a valid value
+                if (!SortOrderHelper.TryParse(sortOrder, out parsedSortOrder))
+                    return BadRequest($"Sort order '' is not valid, enter ASC or DESC");
+            }
+
             var payments = await _paymentRepository.ListAsync(
                     predicate: x=>x.User.Id == userId,
-                    sortOptions: new SortOptions(nameof(Charge.Id), SortOrder.Descending),
+                    sortOptions: new SortOptions(nameof(Charge.Id), parsedSortOrder),
                     pageSize: pageSize,
                     pageNumber: pageNumber);
 
@@ -98,7 +106,6 @@ namespace NetCore3_api.WebApi.Controllers
         [Produces(typeof(GetPaymentResponse))]
         public async Task<ActionResult> Get(long userId, long id)
         {
-            //ToDo falta referenciar las entidades hijas
             var payment = await _paymentRepository.FindAsync(x=>x.Id == id && x.User.Id == userId);
             
             if (payment != null)
