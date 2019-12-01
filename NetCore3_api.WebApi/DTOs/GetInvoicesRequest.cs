@@ -9,7 +9,7 @@ namespace NetCore3_api.WebApi.DTOs
 {
     public class GetInvoicesRequest
     {
-        private MonthYearDTO From;
+        public MonthYearDTO From;
         public MonthYearDTO GetFromMonthYear()
         {
             if(From != null && From.IsValidMonthYear())
@@ -18,7 +18,7 @@ namespace NetCore3_api.WebApi.DTOs
                 return null;
         }
 
-        private MonthYearDTO To;
+        public MonthYearDTO To;
         public MonthYearDTO GetToMonthYear()
         {
             if (To != null && To.IsValidMonthYear())
@@ -27,7 +27,7 @@ namespace NetCore3_api.WebApi.DTOs
                 return null;
         }
 
-        private MonthYearDTO SpecificMonthYear;
+        public MonthYearDTO SpecificMonthYear;
         public MonthYearDTO GetSpecificMonthYear()
         {
             if (SpecificMonthYear != null && SpecificMonthYear.IsValidMonthYear())

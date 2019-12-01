@@ -14,6 +14,70 @@
             <param name="sortOrder">ASC, DESC</param>
             <returns></returns>
         </member>
+        <member name="M:NetCore3_api.WebApi.Controllers.ChargeController.Get(System.Int64,System.Int64)">
+            <summary>
+            Get a specific charge for a user
+            </summary>
+            <param name="userId"></param>
+            <param name="id">Charge Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:NetCore3_api.WebApi.Controllers.DebtController.Get(System.Int64)">
+            <summary>
+            Get the user's debt (the sum of all unpaid charges). If the user has debt in different currencies, they will be shown as different debt resources
+            </summary>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NetCore3_api.WebApi.Controllers.EventController.Create(System.Int64,NetCore3_api.WebApi.DTOs.CreateEventRequest)">
+            <summary>
+            Create an event and a corresponding charge. If creation is successful, returns the created charge (not the event)
+            </summary>
+            <param name="userId"></param>
+            <param name="createEventRequest">The event must have a valid amount (>0), currency (ARS, US) and event type (clasificado, venta, etc.)</param>
+            <returns></returns>
+        </member>
+        <member name="M:NetCore3_api.WebApi.Controllers.InvoiceController.Get(System.Int64,NetCore3_api.WebApi.DTOs.GetInvoicesRequest)">
+            <summary>
+            Get all invoices for a user. The request allows filtering by FROM and TO periods (month-year) or by a specific period.
+            If a user has charges in 2 currencies, 2 invoices were created. Invoices are unique per user, period and currency. 
+            (Maybe they can be joined in the frontend or refactored to store them as a single entity)
+            </summary>
+            <param name="userId"></param>
+            <param name="getInvoiceRequest">
+                Allows period filtering. IMPORTANT! Must specify both month and year to make the period parameter valid.
+                If, for example, From Month = 1 but From Year = null, the From period will be ignored.
+                If the SpecificMonthYear parameter was completed, 'from' and 'to' periods will be ignored.
+            </param>
+            <returns></returns>
+        </member>
+        <member name="M:NetCore3_api.WebApi.Controllers.PaymentController.Create(System.Int64,NetCore3_api.WebApi.DTOs.CreatePaymentRequest)">
+            <summary>
+            If the payment is valid (e.g. doesn't exceed current user's debt) a new payment is created, linked to the corresponding 
+            unpaid charges and associated to an invoice. To select unpaid charges to fulfil, the oldest charges are selected first.
+            </summary>
+            <param name="userId"></param>
+            <param name="createPaymentRequest">The amount must be > 0 and the currency valid (ARS, US)</param>
+            <returns></returns>
+        </member>
+        <member name="M:NetCore3_api.WebApi.Controllers.PaymentController.Get(System.Int64,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String)">
+            <summary>
+            Get all user payments. Optional parameters allow result paging and sorting, default sort order is descending and will show most recent payments first.
+            </summary>
+            <param name="userId"></param>
+            <param name="pageSize"></param>
+            <param name="pageNumber"></param>
+            <param name="sortOrder"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NetCore3_api.WebApi.Controllers.PaymentController.Get(System.Int64,System.Int64)">
+            <summary>
+            Get a specific payment for a user
+            </summary>
+            <param name="userId"></param>
+            <param name="id">Charge Id</param>
+            <returns></returns>
+        </member>
         <member name="M:NetCore3_api.WebApi.DTOs.GetInvoicesRequest.GetPeriodToSearch">
             <summary>
             Returns a tuple with From - To month year dtos

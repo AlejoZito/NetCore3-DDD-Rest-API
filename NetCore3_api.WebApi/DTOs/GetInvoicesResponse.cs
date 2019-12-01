@@ -15,6 +15,7 @@ namespace NetCore3_api.WebApi.DTOs
     {
         public int Year { get; set; }
         public int Month { get; set; }
+        public string Currency { get; set; }
         public List<GetChargeResponse> Charges { get; set; }
         public List<GetPaymentResponse> Payments { get; set; }
     }

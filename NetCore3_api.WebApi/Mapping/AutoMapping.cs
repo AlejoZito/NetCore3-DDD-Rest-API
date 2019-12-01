@@ -40,7 +40,8 @@ namespace NetCore3_api.WebApi.Mapping
 
             CreateMap<Invoice, GetInvoiceResponse>()
                 .ForMember(x => x.Charges, options => options.MapFrom(x => x.Charges))
-                .ForMember(x => x.Payments, options => options.MapFrom(x => x.Payments));
+                .ForMember(x => x.Payments, options => options.MapFrom(x => x.Payments))
+                .ForMember(x => x.Currency, options => options.MapFrom(x => x.Currency.ToString()));
             CreateMap<List<Invoice>, GetInvoicesResponse>()
                 .ForMember(x => x.Invoices, options => options.MapFrom(x => x));
         }

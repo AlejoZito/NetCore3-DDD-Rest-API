@@ -21,9 +21,11 @@ namespace NetCore3_api.Infrastructure.Repositories
             SortOptions sortOptions = null, 
             int? pageSize = int.MaxValue, int? pageNumber = 1)
         {
+            //ToDo: pagination
             return await _dbContext.Invoices
                 .Include(x => x.Charges).ThenInclude(x => x.Payments).ThenInclude(x=>x.Payment)
                 .Where(predicate)
+                .OrderByDescending(x=>x.Year).ThenByDescending(x=>x.Month).ThenBy(x=>x.Currency)
                 .ToListAsync();
         }
     }

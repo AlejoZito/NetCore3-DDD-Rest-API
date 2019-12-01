@@ -44,9 +44,15 @@ namespace NetCore3_api.WebApi.Controllers
             _dbContext = dbContext;
         }
 
+        /// <summary>
+        /// If the payment is valid (e.g. doesn't exceed current user's debt) a new payment is created, linked to the corresponding 
+        /// unpaid charges and associated to an invoice. To select unpaid charges to fulfil, the oldest charges are selected first.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="createPaymentRequest">The amount must be > 0 and the currency valid (ARS, US)</param>
+        /// <returns></returns>
         [HttpPost("users/{userId}/payments")]
-        [Produces(typeof(Charge))]
-        //[Produces(typeof(CreateEventFailedResponse))]
+        [Produces(typeof(Charge))]        
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Create(
@@ -79,6 +85,14 @@ namespace NetCore3_api.WebApi.Controllers
         }
 
         // GET: api/payments
+        /// <summary>
+        /// Get all user payments. Optional parameters allow result paging and sorting, default sort order is descending and will show most recent payments first.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="sortOrder"></param>
+        /// <returns></returns>
         [HttpGet("users/{userId}/payments")]
         [Produces(typeof(GetPaymentResponse))]
         public async Task<ActionResult> Get(long userId, int? pageSize = null, int? pageNumber = null, string sortOrder = null)
@@ -102,6 +116,12 @@ namespace NetCore3_api.WebApi.Controllers
         }
 
         // GET: api/payments/5
+        /// <summary>
+        /// Get a specific payment for a user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="id">Charge Id</param>
+        /// <returns></returns>
         [HttpGet("users/{userId}/payments/{id}")]
         [Produces(typeof(GetPaymentResponse))]
         public async Task<ActionResult> Get(long userId, long id)

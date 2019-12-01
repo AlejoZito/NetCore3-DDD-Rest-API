@@ -36,8 +36,20 @@ namespace NetCore3_api.WebApi.Controllers
 
 
         // GET: api/users/5/invoices
+        /// <summary>
+        /// Get all invoices for a user. The request allows filtering by FROM and TO periods (month-year) or by a specific period.
+        /// If a user has charges in 2 currencies, 2 invoices were created. Invoices are unique per user, period and currency. 
+        /// (Maybe they can be joined in the frontend or refactored to store them as a single entity)
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="getInvoiceRequest">
+        ///     Allows period filtering. IMPORTANT! Must specify both month and year to make the period parameter valid.
+        ///     If, for example, From Month = 1 but From Year = null, the From period will be ignored.
+        ///     If the SpecificMonthYear parameter was completed, 'from' and 'to' periods will be ignored.
+        /// </param>
+        /// <returns></returns>
         [HttpGet("users/{userId}/invoices")]
-        [Produces(typeof(GetInvoiceResponse))]
+        [Produces(typeof(GetInvoicesResponse))]
         public async Task<ActionResult> Get([FromRoute]long userId, [FromQuery] GetInvoicesRequest getInvoiceRequest = null)
         {
             InvoiceService invoiceService = new InvoiceService(_invoiceRepository);

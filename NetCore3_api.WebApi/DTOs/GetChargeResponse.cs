@@ -14,8 +14,10 @@ namespace NetCore3_api.WebApi.DTOs
         public decimal UnPaidAmount { get; set; }
         public string Currency { get; set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public List<GetPaymentChargeResponse> Payments { get; set; }        
+        public List<GetPaymentChargeResponse> Payments { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string User { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string Category { get; set; }
         //Dont map event
         //public Event Event { get; set; }

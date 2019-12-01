@@ -51,7 +51,7 @@ namespace NetCore3_api.WebApi.Controllers
         /// <param name="sortOrder">ASC, DESC</param>
         /// <returns></returns>
         [HttpGet("users/{userId}/charges")]
-        [Produces(typeof(GetChargeResponse))]
+        [Produces(typeof(List<GetChargeResponse>))]
         public async Task<ActionResult> Get(long userId, int? pageSize = null, int? pageNumber = null, string sortOrder = null)
         {
             SortOrder parsedSortOrder = SortOrder.Descending; //Default sort order shows most recent items first
@@ -73,6 +73,12 @@ namespace NetCore3_api.WebApi.Controllers
         }
 
         // GET: api/charges/5
+        /// <summary>
+        /// Get a specific charge for a user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="id">Charge Id</param>
+        /// <returns></returns>
         [HttpGet("users/{userId}/charges/{id}")]
         [Produces(typeof(GetChargeResponse))]
         public async Task<ActionResult> Get(long userId, long id)
@@ -82,7 +88,7 @@ namespace NetCore3_api.WebApi.Controllers
             if (charge != null)
                 return Ok(_mapper.Map<GetChargeResponse>(charge));
             else
-                return NotFound($"No module profile was found with id {id}");
+                return NotFound($"No charge was found with id {id}");
         }
     }
 }

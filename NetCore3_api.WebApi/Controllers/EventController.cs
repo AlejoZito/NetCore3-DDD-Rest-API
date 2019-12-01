@@ -44,10 +44,14 @@ namespace NetCore3_api.WebApi.Controllers
             _dbContext = dbContext;
         }
 
-
+        /// <summary>
+        /// Create an event and a corresponding charge. If creation is successful, returns the created charge (not the event)
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="createEventRequest">The event must have a valid amount (>0), currency (ARS, US) and event type (clasificado, venta, etc.)</param>
+        /// <returns></returns>
         [HttpPost("users/{userId}/events")]
         [Produces(typeof(Charge))]
-        //[Produces(typeof(CreateEventFailedResponse))]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Create(

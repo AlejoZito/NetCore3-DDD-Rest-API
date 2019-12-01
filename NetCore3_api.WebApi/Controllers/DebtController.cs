@@ -42,8 +42,13 @@ namespace NetCore3_api.WebApi.Controllers
 
 
         // GET: api/users/5/debts
+        /// <summary>
+        /// Get the user's debt (the sum of all unpaid charges). If the user has debt in different currencies, they will be shown as different debt resources
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         [HttpGet("users/{userId}/debts")]
-        [Produces(typeof(GetChargeResponse))]
+        [Produces(typeof(GetUserDebtResponse))]
         public async Task<ActionResult> Get(long userId)
         {
             UserDebtService userDebtService = new UserDebtService(_chargeRepository);
