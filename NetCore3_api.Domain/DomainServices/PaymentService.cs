@@ -43,7 +43,10 @@ namespace NetCore3_api.Domain.DomainServices
             {
                 //1) Validate payment is valid with business rules (DOES NOT EXCEED USER DEBTH)
                 if (await _userDebtService.IsValidPayment(payment) == false)
-                    throw new ArgumentException("Payment amount cannot exceed user debt in this currency");
+                {
+                    payment.ValidationErrors.Add(new ValidationError(nameof(Payment.Amount), "Payment amount cannot exceed current user's debt"));
+                    throw new InvalidEntityException(payment);
+                }
 
                 //2) Find unpaid charges to pay
                 var linkedCharges = await LinkPaymentToCharges(payment, userId);
@@ -70,11 +73,12 @@ namespace NetCore3_api.Domain.DomainServices
             List<PaymentCharge> generatedPaymentCharges = new List<PaymentCharge>();
             //Get all charges that have not been fully paid, for this currency type
             //orders result by id, so that oldest charges will be paid first.
-            var unPaidCharges = await _chargeRepository.ListAsync(x =>
-                x.Event.User.Id == userId &&
-                x.Amount.Currency == payment.Currency &&
-                x.Payments.Sum(x => x.Amount) < x.Amount.Amount,
-                new SortOptions(nameof(Event.Date), SortOrder.Ascending));
+            var unPaidCharges = await _userDebtService.GetUnpaidCharges(userId, payment.Currency);
+            //var unPaidCharges = await _chargeRepository.ListAsync(x =>
+            //    x.Event.User.Id == userId &&
+            //    x.Amount.Currency == payment.Currency &&
+            //    x.Payments.Sum(x => x.Amount) < x.Amount.Amount,
+            //    new SortOptions(nameof(Charge.Id), SortOrder.Ascending));
 
             //Variable that stores amount left on payment entity.
             //When linked to a charge, the charge's amount is substracted.

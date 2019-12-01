@@ -9,6 +9,10 @@ namespace NetCore3_api.Domain.Models.ValueObjects
 {
     public class AmountCurrency : IValidatable
     {
+        /// <summary>
+        /// Parameterless constructor required by Entity Framework
+        /// </summary>
+        public AmountCurrency() { }
         public AmountCurrency(decimal amount, string currency)
         {
             Amount = amount;

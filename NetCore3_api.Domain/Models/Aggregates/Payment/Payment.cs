@@ -9,6 +9,9 @@ namespace NetCore3_api.Domain.Models.Aggregates.Payment
 {
     public class Payment : Entity, IValidatable
     {
+        /// <summary>
+        /// Parameterless constructor required by Entity Framework
+        /// </summary>
         public Payment() { }
         public Payment(decimal amount, Currency currency, U.User user)
         {

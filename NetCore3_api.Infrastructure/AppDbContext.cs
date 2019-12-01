@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NetCore3_api.Domain.Models.Aggregates.Event;
+using NetCore3_api.Domain.Models.Aggregates.Payment;
 using NetCore3_api.Domain.Models.Aggregates.User;
 using NetCore3_api.Infrastructure.EntityConfigurations;
 using System;
@@ -34,6 +35,8 @@ namespace NetCore3_api.Infrastructure
 
             modelBuilder.ApplyConfiguration(new EventConfiguration());
             modelBuilder.ApplyConfiguration(new ChargeConfiguration());
+            modelBuilder.ApplyConfiguration(new PaymentConfiguration());
+            modelBuilder.ApplyConfiguration(new InvoiceConfiguration());
 
             Seed(modelBuilder);
         }
@@ -58,6 +61,8 @@ namespace NetCore3_api.Infrastructure
 
             modelBuilder.Entity<User>().HasData(new User() { Id = 1, Username = "Hermeto Pascoal" });
             modelBuilder.Entity<User>().HasData(new User() { Id = 2, Username = "Leon Montana" });
+
+
         }
 
         public override int SaveChanges()

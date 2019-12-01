@@ -17,7 +17,7 @@ using Swashbuckle.AspNetCore.Filters;
 
 namespace NetCore3_api.WebApi.Controllers
 {
-    [Route("api/events")]
+    [Route("api/")]
     [ApiController]
     public class EventController : ControllerBase
     {
@@ -45,12 +45,13 @@ namespace NetCore3_api.WebApi.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost("users/{userId}/events")]
         [Produces(typeof(Charge))]
         //[Produces(typeof(CreateEventFailedResponse))]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Create(
+            [FromRoute]long userId,
             [FromBody]CreateEventRequest createEventRequest)
         {
             //Get charge domain service
@@ -66,7 +67,7 @@ namespace NetCore3_api.WebApi.Controllers
                 Charge createdCharge = await chargeService.CreateChargeWithEvent(
                     createEventRequest.Amount,
                     createEventRequest.Currency,
-                    createEventRequest.UserId,
+                    userId,
                     createEventRequest.EventTypeName);
 
                 await _dbContext.SaveChangesAsync();

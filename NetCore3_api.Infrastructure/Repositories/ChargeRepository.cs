@@ -23,6 +23,18 @@ namespace NetCore3_api.Infrastructure.Repositories
                 .Include(x => x.Event).ThenInclude(x => x.Type).ThenInclude(x=>x.Category)
                 .ToListAsync();
         }
+        public override async Task<List<Charge>> ListAsync(
+            Expression<Func<Charge, bool>> predicate, 
+            SortOptions sortOptions = null, 
+            int? pageSize = int.MaxValue, int? pageNumber = 1)
+        {
+            return await _dbContext.Charges
+                .Include(x => x.Payments).ThenInclude(x => x.Payment)
+                .Include(x => x.Event).ThenInclude(x => x.User)
+                .Include(x => x.Event).ThenInclude(x => x.Type).ThenInclude(x => x.Category)
+                .Where(predicate)
+                .ToListAsync();
+        }
         public override async Task<Charge> FindByIdAsync(long id)
         {
             return await _dbContext.Charges

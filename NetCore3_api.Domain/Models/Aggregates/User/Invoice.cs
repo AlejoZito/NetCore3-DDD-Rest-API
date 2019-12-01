@@ -12,6 +12,9 @@ namespace NetCore3_api.Domain.Models.Aggregates.User
 {
     public class Invoice : Entity, IValidatable
     {
+        /// <summary>
+        /// Parameterless constructor required by Entity Framework
+        /// </summary>
         public Invoice()
         {
             Charges = new List<Charge>();

@@ -54,20 +54,43 @@ namespace NetCore3_api.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Payment",
+                name: "Invoices",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Currency = table.Column<string>(nullable: true),
-                    Amount = table.Column<decimal>(nullable: false),
+                    Month = table.Column<int>(nullable: false),
+                    Year = table.Column<int>(nullable: false),
+                    Currency = table.Column<int>(nullable: false),
                     UserId = table.Column<long>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Payment", x => x.Id);
+                    table.PrimaryKey("PK_Invoices", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Payment_Users_UserId",
+                        name: "FK_Invoices_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Payments",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Amount = table.Column<decimal>(nullable: false),
+                    Currency = table.Column<int>(nullable: false),
+                    UserId = table.Column<long>(nullable: true),
+                    Date = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Payments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Payments_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -105,8 +128,8 @@ namespace NetCore3_api.Infrastructure.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Amount = table.Column<decimal>(nullable: false),
-                    Currency = table.Column<string>(nullable: true),
+                    Amount_Amount = table.Column<decimal>(nullable: true),
+                    Amount_Currency = table.Column<int>(nullable: true),
                     EventId = table.Column<long>(nullable: true)
                 },
                 constraints: table =>
@@ -140,9 +163,9 @@ namespace NetCore3_api.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_PaymentCharge_Payment_PaymentId",
+                        name: "FK_PaymentCharge_Payments_PaymentId",
                         column: x => x.PaymentId,
-                        principalTable: "Payment",
+                        principalTable: "Payments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -202,8 +225,8 @@ namespace NetCore3_api.Infrastructure.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Payment_UserId",
-                table: "Payment",
+                name: "IX_Invoices_UserId",
+                table: "Invoices",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -215,10 +238,18 @@ namespace NetCore3_api.Infrastructure.Migrations
                 name: "IX_PaymentCharge_PaymentId",
                 table: "PaymentCharge",
                 column: "PaymentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Payments_UserId",
+                table: "Payments",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Invoices");
+
             migrationBuilder.DropTable(
                 name: "PaymentCharge");
 
@@ -226,7 +257,7 @@ namespace NetCore3_api.Infrastructure.Migrations
                 name: "Charges");
 
             migrationBuilder.DropTable(
-                name: "Payment");
+                name: "Payments");
 
             migrationBuilder.DropTable(
                 name: "Events");

@@ -10,8 +10,8 @@ using NetCore3_api.Infrastructure;
 namespace NetCore3_api.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20191124035404_Charge_AmountCurrency")]
-    partial class Charge_AmountCurrency
+    [Migration("20191201001358_PaymentMapping")]
+    partial class PaymentMapping
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -175,8 +175,11 @@ namespace NetCore3_api.Infrastructure.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Currency")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Currency")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
 
                     b.Property<long?>("UserId")
                         .HasColumnType("bigint");
@@ -185,7 +188,7 @@ namespace NetCore3_api.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Payment");
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("NetCore3_api.Domain.Models.Aggregates.Payment.PaymentCharge", b =>
@@ -201,7 +204,7 @@ namespace NetCore3_api.Infrastructure.Migrations
                     b.Property<long?>("ChargeId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("PaymentId")
+                    b.Property<long>("PaymentId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
@@ -211,6 +214,32 @@ namespace NetCore3_api.Infrastructure.Migrations
                     b.HasIndex("PaymentId");
 
                     b.ToTable("PaymentCharge");
+                });
+
+            modelBuilder.Entity("NetCore3_api.Domain.Models.Aggregates.User.Invoice", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Currency")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Month")
+                        .HasColumnType("int");
+
+                    b.Property<long?>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Invoices");
                 });
 
             modelBuilder.Entity("NetCore3_api.Domain.Models.Aggregates.User.User", b =>
@@ -256,8 +285,8 @@ namespace NetCore3_api.Infrastructure.Migrations
                             b1.Property<decimal>("Amount")
                                 .HasColumnType("decimal(18,2)");
 
-                            b1.Property<string>("Currency")
-                                .HasColumnType("nvarchar(max)");
+                            b1.Property<int?>("Currency")
+                                .HasColumnType("int");
 
                             b1.HasKey("ChargeId");
 
@@ -305,7 +334,16 @@ namespace NetCore3_api.Infrastructure.Migrations
 
                     b.HasOne("NetCore3_api.Domain.Models.Aggregates.Payment.Payment", "Payment")
                         .WithMany("Charges")
-                        .HasForeignKey("PaymentId");
+                        .HasForeignKey("PaymentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("NetCore3_api.Domain.Models.Aggregates.User.Invoice", b =>
+                {
+                    b.HasOne("NetCore3_api.Domain.Models.Aggregates.User.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618
         }

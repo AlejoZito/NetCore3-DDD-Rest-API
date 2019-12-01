@@ -8,6 +8,10 @@ namespace NetCore3_api.Domain.Models.Aggregates.Payment
     //Many to many relationship required entity
     public class PaymentCharge : Entity
     {
+        /// <summary>
+        /// Parameterless constructor required by Entity Framework
+        /// </summary>
+        public PaymentCharge() { }
         public PaymentCharge(Charge charge, Payment payment, decimal amount)
         {
             Charge = charge;

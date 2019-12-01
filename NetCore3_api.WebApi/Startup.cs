@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using NetCore3_api.Domain.Contracts;
 using NetCore3_api.Domain.Models.Aggregates.Event;
+using NetCore3_api.Domain.Models.Aggregates.Payment;
 using NetCore3_api.Domain.Models.Aggregates.User;
 using NetCore3_api.Infrastructure;
 using NetCore3_api.Infrastructure.Repositories;
@@ -47,7 +48,9 @@ namespace NetCore3_api.WebApi
                     b => b.MigrationsAssembly("NetCore3_api.Infrastructure")));
 
             services.AddScoped<IRepository<Charge>, ChargeRepository>();
-            services.AddScoped<IRepository<EventType>, BaseRepository<EventType>>();
+            services.AddScoped<IRepository<EventType>, EventTypeRepository>();
+            services.AddScoped<IRepository<Invoice>, BaseRepository<Invoice>>();
+            services.AddScoped<IRepository<Payment>, BaseRepository<Payment>>();
             services.AddScoped<IRepository<User>, BaseRepository<User>>();
 
 

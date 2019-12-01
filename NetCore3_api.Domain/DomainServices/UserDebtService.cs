@@ -41,6 +41,16 @@ namespace NetCore3_api.Domain.DomainServices
             return userDebt;
         }
 
+        public Task<List<Charge>> GetUnpaidCharges(long userId, Currency currency)
+        {
+            //Get all charges that have not been fully paid, for this currency type
+            return _chargeRepository.ListAsync(x =>
+                x.Event.User.Id == userId &&
+                x.Amount.Currency == currency &&
+                (x.Payments.Sum(x => (decimal?)x.Amount) ?? 0) < x.Amount.Amount, //Nullable cast required to create query like "SELECT ISNULL(SUM([p].[Amount]),0)"
+                new SortOptions(nameof(Charge.Id), SortOrder.Ascending));             
+        }
+
         /// <summary>
         /// Gets the user's debt in a specific currency
         /// </summary>
@@ -49,11 +59,7 @@ namespace NetCore3_api.Domain.DomainServices
         /// <returns></returns>
         public async Task<AmountCurrency> GetUserDebtByCurrency(long userId, Currency currency)
         {
-            //Get all charges that have not been fully paid, for this currency type
-            var unPaidCharges = await _chargeRepository.ListAsync(x =>
-                x.Event.User.Id == userId &&
-                x.Amount.Currency == currency &&
-                x.Payments.Sum(x => x.Amount) < x.Amount.Amount);
+            List<Charge> unPaidCharges = await GetUnpaidCharges(userId, currency);
 
             if (unPaidCharges != null && unPaidCharges.Count > 0)
                 //Sum the unpaid amount of all unpaid charges

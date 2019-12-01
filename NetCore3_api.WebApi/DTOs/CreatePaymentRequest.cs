@@ -6,13 +6,11 @@ using System.Threading.Tasks;
 
 namespace NetCore3_api.WebApi.DTOs
 {
-    public class CreateEventRequest
+    public class CreatePaymentRequest
     {
         [JsonProperty("amount")]
         public decimal Amount { get; internal set; }
         [JsonProperty("currency")]
         public string Currency { get; internal set; }
-        [JsonProperty("eventTypeName")]
-        public string EventTypeName { get; internal set; }
     }
 }

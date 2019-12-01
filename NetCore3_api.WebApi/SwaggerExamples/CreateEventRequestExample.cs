@@ -16,7 +16,6 @@ namespace NetCore3_api.WebApi.SwaggerExamples
             {
                 Amount = 100,
                 Currency = "ARS",
-                UserId = 1,
                 EventTypeName = "MercadoPago"
             };
         }

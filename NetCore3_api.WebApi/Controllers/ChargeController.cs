@@ -17,7 +17,7 @@ using Swashbuckle.AspNetCore.Filters;
 
 namespace NetCore3_api.WebApi.Controllers
 {
-    [Route("api/charges")]
+    [Route("api/")]
     [ApiController]
     public class ChargeController : ControllerBase
     {
@@ -42,27 +42,30 @@ namespace NetCore3_api.WebApi.Controllers
 
 
         // GET: api/charges
-        [HttpGet]
+        [HttpGet("users/{userId}/charges")]
         [Produces(typeof(GetChargeResponse))]
-        public async Task<ActionResult> Get(int? pageSize = null, int? pageNumber = null)
+        public async Task<ActionResult> Get(long userId, int? pageSize = null, int? pageNumber = null)
         {
             //ToDo implement pagination
-            return Ok(_mapper.Map<List<GetChargeResponse>>(await _chargeRepository.ListAsync(
+            var charges = await _chargeRepository.ListAsync(
+                    predicate: x => x.Event.User.Id == userId,
                     sortOptions: new SortOptions(nameof(Charge.Id), SortOrder.Descending),
                     pageSize: pageSize,
-                    pageNumber: pageNumber)));
+                    pageNumber: pageNumber);
+
+            return Ok(_mapper.Map<List<GetChargeResponse>>(charges));
         }
 
         // GET: api/charges/5
-        [HttpGet("{id}")]
-        [Produces(typeof(List<GetChargeResponse>))]
-        public async Task<ActionResult> Get(int id)
+        [HttpGet("users/{userId}/charges/{id}")]
+        [Produces(typeof(GetChargeResponse))]
+        public async Task<ActionResult> Get(long userId, long id)
         {
             //ToDo falta referenciar las entidades hijas
-            var moduleProfile = await _chargeRepository.FindByIdAsync(id);
+            var charge = await _chargeRepository.FindAsync(x => x.Event.User.Id == userId && x.Id == id);
 
-            if (moduleProfile != null)
-                return Ok(_mapper.Map<GetChargeResponse>(moduleProfile));
+            if (charge != null)
+                return Ok(_mapper.Map<GetChargeResponse>(charge));
             else
                 return NotFound($"No module profile was found with id {id}");
         }
