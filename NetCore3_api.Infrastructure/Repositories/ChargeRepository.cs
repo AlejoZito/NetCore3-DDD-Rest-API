@@ -35,12 +35,12 @@ namespace NetCore3_api.Infrastructure.Repositories
                 .Where(predicate)
                 .ToListAsync();
         }
-        public override async Task<Charge> FindByIdAsync(long id)
+        public override Task<Charge> FindByIdAsync(long id)
         {
-            return await _dbContext.Charges
+            return _dbContext.Charges
                 .Include(x => x.Payments).ThenInclude(x => x.Payment)
                 .Include(x=>x.Event).ThenInclude(x=>x.User)
-                .SingleOrDefaultAsync(x => x.Id == id);
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
     }
 }

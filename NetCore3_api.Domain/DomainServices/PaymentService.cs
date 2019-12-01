@@ -82,24 +82,25 @@ namespace NetCore3_api.Domain.DomainServices
 
             //Variable that stores amount left on payment entity.
             //When linked to a charge, the charge's amount is substracted.
-            decimal paymentAmount = payment.Amount;
+            decimal paymentAmountLeft = payment.Amount;
             int i = 0;
-            while (paymentAmount > 0 && i < unPaidCharges.Count)
+            while (paymentAmountLeft > 0 && i < unPaidCharges.Count)
             {
-                //decimal payedAmount = paymentAmount - unPaidCharges[i].Amount.Amount;
+                decimal chargeUnPaidAmount = unPaidCharges[i].GetUnPaidAmount().Amount;
 
-                if (paymentAmount - unPaidCharges[i].Amount.Amount >= 0)
+                //Check if payment's $ left can pay the charges full debth
+                if (paymentAmountLeft - chargeUnPaidAmount >= 0)
                 {
-                    //Payment pays off the charge completely
-                    generatedPaymentCharges.Add(new PaymentCharge(unPaidCharges[i], payment, unPaidCharges[i].Amount.Amount));
-                    paymentAmount -= unPaidCharges[i].Amount.Amount;
+                    //The charge is payed completely
+                    generatedPaymentCharges.Add(new PaymentCharge(unPaidCharges[i], payment, chargeUnPaidAmount));
+                    paymentAmountLeft -= chargeUnPaidAmount; //Substract the amount of the remaining charge debth
                 }
                 else
                 {
                     //The charge is partially paid
-                    generatedPaymentCharges.Add(new PaymentCharge(unPaidCharges[i], payment, paymentAmount));
+                    generatedPaymentCharges.Add(new PaymentCharge(unPaidCharges[i], payment, paymentAmountLeft));
                     //This payment cannot payoff more charges
-                    paymentAmount = 0;
+                    paymentAmountLeft = 0;
                 }
                 i++;
             }

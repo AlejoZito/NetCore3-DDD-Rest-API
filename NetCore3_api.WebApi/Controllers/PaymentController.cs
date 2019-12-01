@@ -66,11 +66,11 @@ namespace NetCore3_api.WebApi.Controllers
 
                 await _dbContext.SaveChangesAsync();
 
-                return CreatedAtAction($"users/{userId}/payments", new { id = createdPayment.Id }, createdPayment);
+                return Ok(_mapper.Map<GetPaymentResponse>(createdPayment));
             }
             catch (InvalidEntityException ex)
             {
-                return BadRequest(_mapper.Map<CreateEventFailedResponse>(ex.Model));
+                return BadRequest(ex.Model);
             }
         }
 
@@ -98,9 +98,9 @@ namespace NetCore3_api.WebApi.Controllers
             var payment = await _paymentRepository.FindAsync(x=>x.Id == id && x.User.Id == userId);
             
             if (payment != null)
-                return Ok(_mapper.Map<GetChargeResponse>(payment));
+                return Ok(_mapper.Map<GetPaymentResponse>(payment));
             else
-                return NotFound($"No module profile was found with id {id}");
+                return NotFound($"No payment was found for id {id}");
         }
     }
 }

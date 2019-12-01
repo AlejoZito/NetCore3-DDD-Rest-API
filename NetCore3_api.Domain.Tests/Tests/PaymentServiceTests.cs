@@ -13,6 +13,8 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Linq.Expressions;
 using NetCore3_api.Domain.Models.ValueObjects;
+using NetCore3_api.Domain.Enumerations;
+using NetCore3_api.Domain.Contracts.Exceptions;
 
 namespace NetCore3_api.Domain.Tests.Tests
 {
@@ -131,6 +133,60 @@ namespace NetCore3_api.Domain.Tests.Tests
                 Assert.AreEqual(2, createdPayment.Charges.ElementAt(1).Charge.Id, "Payment should be linked with charge with ID 2");
                 Assert.AreEqual(50, createdPayment.Charges.ElementAt(1).Amount, "Payment to charge 2 should only assign 50 AR$.");
                 Assert.AreEqual(MockData.TEST_USERNAME, createdPayment.User.Username, "Payment should be linked to test user");
+            });
+        }
+
+        [Test]
+        public async Task ShouldAllowPaymentsUntilDebtIsFulfilled()
+        {
+            var testCharge = new Charge()
+            {
+                Id = 1,
+                Amount = new AmountCurrency(100, Enumerations.Currency.ARS),
+                Event = new Event() { Date = new DateTime(2019, 1, 1) },
+                Payments = new List<PaymentCharge>()
+            };
+
+            var chargeRepository = new Mock<IRepository<Charge>>();
+            chargeRepository.Setup(x => x.ListAsync(
+                It.IsAny<Expression<Func<Charge, bool>>>(),
+                It.IsAny<SortOptions>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>()))
+                .Returns(Task.FromResult(new List<Charge>() { testCharge }));
+
+            //Setup mock to return "inserted" entity
+            var paymentRepository = new Mock<IRepository<Payment>>();
+            paymentRepository.Setup(x => x.Insert(It.IsAny<Payment>()))
+                    .Returns((Payment p) => p);
+
+            var userRepository = new Mock<IRepository<User>>();
+            userRepository.Setup(x => x.FindByIdAsync(It.IsAny<long>()))
+                    .Returns(Task.FromResult(MockData.GetTestUser()));
+
+            var userDebtService = new Mock<IUserDebtService>();
+            //Setup debt service to return valid payment if the payment does not exceed the charge's unpaid amount
+            userDebtService.Setup(x => x.IsValidPayment(It.IsAny<Payment>()))
+                    .Returns((Payment p)=>Task.FromResult(p.Amount <= testCharge.GetUnPaidAmount().Amount));
+            //Setup debt service to always return charge variable
+            userDebtService.Setup(x => x.GetUnpaidCharges(It.IsAny<long>(), It.IsAny<Currency>()))
+                .Returns(Task.FromResult(new List<Charge>() { testCharge }));
+
+            PaymentService paymentService = new PaymentService(
+                chargeRepository.Object,
+                paymentRepository.Object,
+                userRepository.Object,
+                userDebtService.Object);
+
+            Payment firstPayment = await paymentService.ExecutePayment(50, "ARS", 1);
+            testCharge.Payments.Add(new PaymentCharge(testCharge, firstPayment, 50));
+
+            Payment secondPayment = await paymentService.ExecutePayment(40, "ARS", 1);
+            testCharge.Payments.Add(new PaymentCharge(testCharge, firstPayment, 40));
+
+            Assert.CatchAsync(typeof(InvalidEntityException), async () =>
+             {
+                 Payment thirdPayment = await paymentService.ExecutePayment(20, "ARS", 1); //this payment exceeds 100AR$ debt and will be rejected
             });
         }
     }

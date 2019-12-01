@@ -14,19 +14,21 @@ namespace NetCore3_api.WebApi.Mapping
         public AutoMapping()
         {
             CreateMap<Charge, CreateEventFailedResponse>()
-                .ForMember(dest => dest.EventTypeName, src => src.MapFrom(x => x.Event.Type.Name))
-                .ForMember(dest => dest.UserId, src => src.MapFrom(x => x.Event.User.Id))
-                .ForMember(dest => dest.Amount, src => src.MapFrom(x=>x.Amount.Amount))
-                .ForMember(dest => dest.Currency, src => src.MapFrom(x => x.Amount.Currency));
+                .ForMember(dest => dest.EventTypeName, options => options.MapFrom(x => x.Event.Type.Name))
+                .ForMember(dest => dest.UserId, options => options.MapFrom(x => x.Event.User.Id))
+                .ForMember(dest => dest.Amount, options => options.MapFrom(x=>x.Amount.Amount))
+                .ForMember(dest => dest.Currency, options => options.MapFrom(x => x.Amount.Currency));
 
             CreateMap<Charge, GetChargeResponse>()
-                .ForMember(dest => dest.Category, src => src.MapFrom(x => x.Event.Type.Category.Name))
-                .ForMember(dest => dest.User, src => src.MapFrom(x => x.Event.User.Username))
-                .ForMember(dest => dest.Amount, src => src.MapFrom(x => x.Amount.Amount))
-                .ForMember(dest => dest.Currency, src => src.MapFrom(x => x.Amount.Currency))
-                .ForMember(dest => dest.Payments, src => src.MapFrom(x => x.Payments.Select(p=> p.Payment).ToList()));
+                .ForMember(dest => dest.Category, options => options.MapFrom(x => x.Event.Type.Category.Name))
+                .ForMember(dest => dest.User, options => options.MapFrom(x => x.Event.User.Username))
+                .ForMember(dest => dest.Amount, options => options.MapFrom(x => x.Amount.Amount))
+                .ForMember(dest => dest.UnPaidAmount, options => options.MapFrom(x => x.GetUnPaidAmount().Amount))
+                .ForMember(dest => dest.Currency, options => options.MapFrom(x => x.Amount.Currency))
+                .ForMember(dest => dest.Payments, options => options.MapFrom(x => x.Payments));
 
             CreateMap<Payment, GetPaymentResponse>();
+            CreateMap<PaymentCharge, GetPaymentChargeResponse>();                
         }
     }
 }

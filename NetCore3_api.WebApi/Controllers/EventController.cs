@@ -72,8 +72,7 @@ namespace NetCore3_api.WebApi.Controllers
 
                 await _dbContext.SaveChangesAsync();
 
-                //ToDo: ver como parametrizar la url de destino
-                return CreatedAtAction("Charges/Get", new { id = createdCharge.Id }, createdCharge);
+                return Ok(createdCharge);
             }
             catch (InvalidEntityException ex)
             {
