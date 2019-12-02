@@ -95,6 +95,7 @@ namespace NetCore3_api.WebApi
 
             app.UseRouting();
             //app.UseAuthorization();
+            app.UseCors();
 
             app.UseEndpoints(endpoints =>
             {

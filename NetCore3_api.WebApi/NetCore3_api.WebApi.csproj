@@ -8,6 +8,10 @@
     <DocumentationFile>D:\Desarrollo\NetCore3_api\NetCore3_api.WebApi\NetCore3_api.WebApi.xml</DocumentationFile>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>D:\Desarrollo\NetCore3_api\NetCore3_api.WebApi\NetCore3_api.WebApi.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />

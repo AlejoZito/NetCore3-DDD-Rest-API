@@ -78,6 +78,13 @@
             <param name="id">Charge Id</param>
             <returns></returns>
         </member>
+        <member name="M:NetCore3_api.WebApi.Controllers.UserController.Create(System.String)">
+            <summary>
+            Create user. This endpoint has no validations (just for creating test users)
+            </summary>
+            <param name="username"></param>
+            <returns></returns>
+        </member>
         <member name="M:NetCore3_api.WebApi.DTOs.GetInvoicesRequest.GetPeriodToSearch">
             <summary>
             Returns a tuple with From - To month year dtos

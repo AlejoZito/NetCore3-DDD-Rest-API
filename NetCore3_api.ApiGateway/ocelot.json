@@ -4,14 +4,18 @@
       "DownstreamPathTemplate": "/{url}",
       "DownstreamScheme": "http",//"https",
       "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 12978
-        }
         //{
         //  "Host": "localhost",
-        //  "Port": 5005
+        //  "Port": 12978
         //}
+        {
+          "Host": "meli-api-1.azurewebsites.net",
+          "Port":  80
+        },
+        {
+          "Host": "meli-api-2.azurewebsites.net",
+          "Port": 80
+        }
       ],
       "UpstreamPathTemplate": "/{url}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
@@ -21,6 +25,6 @@
     }
   ],
   "GlobalConfiguration": {
-    "BaseUrl": "https://meli-gateway.com/api"
+    "BaseUrl": "https://meli-tests-gateway.azurewebsites.net/"
   }
 }
