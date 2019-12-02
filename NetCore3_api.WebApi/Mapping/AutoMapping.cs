@@ -27,6 +27,7 @@ namespace NetCore3_api.WebApi.Mapping
                 .ForMember(dest => dest.Amount, options => options.MapFrom(x => x.Amount.Amount))
                 .ForMember(dest => dest.UnPaidAmount, options => options.MapFrom(x => x.GetUnPaidAmount().Amount))
                 .ForMember(dest => dest.Currency, options => options.MapFrom(x => x.Amount.Currency))
+                .ForMember(dest => dest.Date, options => options.MapFrom(x => x.Event.Date))
                 .ForMember(dest => dest.Payments, options => options.MapFrom(x => x.Payments));
 
             CreateMap<Payment, GetPaymentResponse>();

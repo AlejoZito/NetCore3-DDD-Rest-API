@@ -85,8 +85,8 @@ namespace NetCore3_api.Domain.Models.Aggregates.User
                 ValidationErrors.Add(new ValidationError(nameof(Month), "Invalid month"));
             if (Year == 0)
                 ValidationErrors.Add(new ValidationError(nameof(Year), "Invalid year"));
-            if(Charges == null || Charges.Count == 0)
-                ValidationErrors.Add(new ValidationError(nameof(Charges), "The invoice must have at least 1 charge"));
+            //if(Charges == null || Charges.Count == 0)
+            //    ValidationErrors.Add(new ValidationError(nameof(Charges), "The invoice must have at least 1 charge"));
         }
     }
 }

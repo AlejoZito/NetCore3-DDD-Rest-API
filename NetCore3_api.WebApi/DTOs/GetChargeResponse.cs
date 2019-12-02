@@ -19,6 +19,8 @@ namespace NetCore3_api.WebApi.DTOs
         public string User { get; set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string Category { get; set; }
+
+        public DateTime Date { get; set; }
         //Dont map event
         //public Event Event { get; set; }
     }
