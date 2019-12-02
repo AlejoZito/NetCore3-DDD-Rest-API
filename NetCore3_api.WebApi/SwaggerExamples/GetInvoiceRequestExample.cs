@@ -13,8 +13,10 @@ namespace NetCore3_api.WebApi.SwaggerExamples
         {
             return new GetInvoicesRequest
             {
-                From = new MonthYearDTO() { Year = 2019, Month = 11},
-                To = new MonthYearDTO() { Year = 2020, Month = 02 }
+                FromMonth = 11,
+                FromYear = 2019,
+                ToMonth = 2,
+                ToYear = 2020,
             };
         }
     }

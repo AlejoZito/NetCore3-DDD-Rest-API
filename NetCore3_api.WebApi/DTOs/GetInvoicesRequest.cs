@@ -9,29 +9,47 @@ namespace NetCore3_api.WebApi.DTOs
 {
     public class GetInvoicesRequest
     {
-        public MonthYearDTO From;
+        public GetInvoicesRequest() { }
+        public GetInvoicesRequest(int? fromMonth, int? fromYear, int? toMonth, int? toYear, int? specificMonth, int? specificYear)
+        {
+            FromMonth = fromMonth;
+            FromYear = fromYear;
+            ToMonth = toMonth;
+            ToYear = toYear;
+            SpecificMonth = specificMonth;
+            SpecificYear = specificYear;
+        }
+
+        public int? FromMonth;
+        public int? FromYear;
         public MonthYearDTO GetFromMonthYear()
         {
-            if(From != null && From.IsValidMonthYear())
-                return From;
+            MonthYearDTO m = new MonthYearDTO() { Month = FromMonth ?? 0, Year = FromYear ?? 0 };
+            if (m.IsValidMonthYear())
+                return m;
             else
                 return null;
         }
 
-        public MonthYearDTO To;
+        public int? ToMonth;
+        public int? ToYear;
         public MonthYearDTO GetToMonthYear()
         {
-            if (To != null && To.IsValidMonthYear())
-                return To;
+            MonthYearDTO m = new MonthYearDTO() { Month = ToMonth ?? 0, Year = ToYear ?? 0 };
+            if (m.IsValidMonthYear())
+                return m;
             else
                 return null;
         }
 
-        public MonthYearDTO SpecificMonthYear;
+        public int? SpecificMonth;
+        public int? SpecificYear;
+
         public MonthYearDTO GetSpecificMonthYear()
         {
-            if (SpecificMonthYear != null && SpecificMonthYear.IsValidMonthYear())
-                return SpecificMonthYear;
+            MonthYearDTO m = new MonthYearDTO() { Month = SpecificMonth ?? 0, Year = SpecificYear ?? 0 };
+            if (m.IsValidMonthYear())
+                return m;
             else
                 return null;
         }

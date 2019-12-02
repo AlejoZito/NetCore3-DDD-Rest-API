@@ -50,8 +50,9 @@ namespace NetCore3_api.WebApi.Controllers
         /// <returns></returns>
         [HttpGet("users/{userId}/invoices")]
         [Produces(typeof(GetInvoicesResponse))]
-        public async Task<ActionResult> Get([FromRoute]long userId, [FromQuery] GetInvoicesRequest getInvoiceRequest = null)
+        public async Task<ActionResult> Get([FromRoute]long userId, [FromQuery] int? fromMonth, int? fromYear, int? toMonth, int? toYear, int? specificMonth, int? specificYear)
         {
+            GetInvoicesRequest getInvoiceRequest = new GetInvoicesRequest(fromMonth, fromYear, toMonth, toYear, specificMonth, specificYear);
             InvoiceService invoiceService = new InvoiceService(_invoiceRepository);
 
             //Tuple stores <FROM, TO> periods

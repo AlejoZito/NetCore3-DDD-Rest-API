@@ -37,7 +37,7 @@
             <param name="createEventRequest">The event must have a valid amount (>0), currency (ARS, US) and event type (clasificado, venta, etc.)</param>
             <returns></returns>
         </member>
-        <member name="M:NetCore3_api.WebApi.Controllers.InvoiceController.Get(System.Int64,NetCore3_api.WebApi.DTOs.GetInvoicesRequest)">
+        <member name="M:NetCore3_api.WebApi.Controllers.InvoiceController.Get(System.Int64,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Get all invoices for a user. The request allows filtering by FROM and TO periods (month-year) or by a specific period.
             If a user has charges in 2 currencies, 2 invoices were created. Invoices are unique per user, period and currency. 
