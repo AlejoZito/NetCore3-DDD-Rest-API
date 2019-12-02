@@ -1,0 +1,270 @@
+{
+	"info": {
+		"_postman_id": "8ea329ff-0808-453b-a771-821c24330c86",
+		"name": "Meli Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "POST Events",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"amount\":60,\n    \"currency\": \"ARS\",\n    \"eventTypeName\": \"clasificado\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://meli-tests-gateway.azurewebsites.net/api/users/1/events",
+					"protocol": "https",
+					"host": [
+						"meli-tests-gateway",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"users",
+						"1",
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Charges",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://meli-tests-gateway.azurewebsites.net/api/users/1/charges?pageSize=10&pageNumber=1&sortOrder=DESC",
+					"protocol": "https",
+					"host": [
+						"meli-tests-gateway",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"users",
+						"1",
+						"charges"
+					],
+					"query": [
+						{
+							"key": "pageSize",
+							"value": "10"
+						},
+						{
+							"key": "pageNumber",
+							"value": "1"
+						},
+						{
+							"key": "sortOrder",
+							"value": "DESC"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Payments",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"amount\":40,\n    \"currency\": \"ARS\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://meli-tests-gateway.azurewebsites.net/api/users/1/payments",
+					"protocol": "https",
+					"host": [
+						"meli-tests-gateway",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"users",
+						"1",
+						"payments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Payments",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://meli-tests-gateway.azurewebsites.net/api/users/1/payments",
+					"protocol": "https",
+					"host": [
+						"meli-tests-gateway",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"users",
+						"1",
+						"payments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET User debt",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://meli-tests-gateway.azurewebsites.net/api/users/1/debts",
+					"protocol": "https",
+					"host": [
+						"meli-tests-gateway",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"users",
+						"1",
+						"debts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Invoices",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://meli-tests-gateway.azurewebsites.net/api/users/1/invoices?FromMonth=11&FromYear=2019",
+					"protocol": "https",
+					"host": [
+						"meli-tests-gateway",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"users",
+						"1",
+						"invoices"
+					],
+					"query": [
+						{
+							"key": "FromMonth",
+							"value": "11"
+						},
+						{
+							"key": "FromYear",
+							"value": "2019"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Users",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\"Peter Parker\"",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://meli-tests-gateway.azurewebsites.net/api/users/",
+					"protocol": "https",
+					"host": [
+						"meli-tests-gateway",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"users",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
