@@ -20,7 +20,7 @@ The API is built around 4 resources: Charges, Payments, Invoices and Events. Use
 This starts the charges/payments flow. Executing a POST request against api/users/{userId}/events, a new charge will be created, and an event attached to it. This event stores information about the user that generated it, as well as time & date, and type.
 
 ### Charges
-This entity is created as a result of creating an event. Once a charge is generated, amount, currency, user and event type are validate, if it is valid, an Invoice will be created.
+This entity is created as a result of creating an event. Once a charge is generated, amount, currency, user and event type are validated: if valid, an Invoice will be created.
 Charges can be queried through /api/users/{userId}/chartes
 
 ### Payments
