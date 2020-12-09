@@ -12,7 +12,7 @@ The deployed infrastructure includes a load balancing api gateway, and n-instanc
 ![alt text](http://alejozito.com/github_images/diagramaInfra.JPG "Infrastructure diagram")
 
 ## REST
-The API is built around 5 resources: Charges, Payments, Invoices, Debts and Events. Users could also be considered a resource, but in this solution it´s not central and was left out.
+The API is built around 4 resources: Charges, Payments, Invoices and Events. Users could also be considered a resource, but in this solution it´s not central and was left out.
 ![alt text](http://alejozito.com/github_images/diagEntidades.JPG "Entitiy relationship diagram")
 
 
